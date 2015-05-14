@@ -162,7 +162,7 @@ public class MainActivity extends Activity
         mWasGetContentIntent = intent.getBooleanExtra("was_get_content_intent", false);
 
        // mFilename="/system/media/audio/alarms/Alarm_Buzzer.ogg";
-        mFilename="/storage/sdcard1/music/어쿠스틱/커피소년-오늘도 굿나잇.mp3";
+         mFilename="/storage/sdcard1/music/어쿠스틱/커피소년-오늘도 굿나잇.mp3";
 
         loadFromFile();
         mSoundFile = null;
@@ -183,6 +183,8 @@ public class MainActivity extends Activity
         } else {
             recordAudio();
         }*/
+
+
     }
 
     private void closeThread(Thread thread) {
@@ -568,6 +570,9 @@ public class MainActivity extends Activity
         TextView markEndButton = (TextView) findViewById(R.id.mark_end);
         markEndButton.setOnClickListener(mMarkEndListener);
 
+        //start end 잠깐제거
+        markStartButton.setVisibility(View.INVISIBLE);
+        markEndButton.setVisibility(View.INVISIBLE);
         enableDisableButtons();
 
         mWaveformView = (WaveformView)findViewById(R.id.waveform);
@@ -599,6 +604,8 @@ public class MainActivity extends Activity
         mEndMarker.setFocusable(true);
         mEndMarker.setFocusableInTouchMode(true);
         mEndVisible = true;
+
+
 
         updateDisplay();
     }
@@ -846,10 +853,12 @@ public class MainActivity extends Activity
     }
 
     private synchronized void updateDisplay() {
+
+
         if (mIsPlaying) {
             int now = mPlayer.getCurrentPosition();
             int frames = mWaveformView.millisecsToPixels(now);
-            mWaveformView.setPlayback(frames);
+            mWaveformView.setPlayback(frames);//재생할때 노란색
             setOffsetGoalNoUpdate(frames - mWidth / 2);
             if (now >= mPlayEndMsec) {
                 handlePause();
@@ -898,7 +907,7 @@ public class MainActivity extends Activity
             }
         }
 
-        mWaveformView.setParameters(mStartPos, mEndPos, mOffset);
+        mWaveformView.setParameters(mStartPos, mEndPos, mOffset);//움직이는 거 반영
         mWaveformView.invalidate();
 
         mStartMarker.setContentDescription(
@@ -954,7 +963,7 @@ public class MainActivity extends Activity
                 mMarkerTopOffset,
                 -mStartMarker.getWidth(),
                 -mStartMarker.getHeight());
-        mStartMarker.setLayoutParams(params);
+        mStartMarker.setLayoutParams(params);//왼쪽 마커 위치 이동
 
         params = new RelativeLayout.LayoutParams(
                 RelativeLayout.LayoutParams.WRAP_CONTENT,
@@ -964,7 +973,13 @@ public class MainActivity extends Activity
                 mWaveformView.getMeasuredHeight() - mEndMarker.getHeight() - mMarkerBottomOffset,
                 -mStartMarker.getWidth(),
                 -mStartMarker.getHeight());
-        mEndMarker.setLayoutParams(params);
+        mEndMarker.setLayoutParams(params);//오른쪽 마커 위치이동
+        mEndMarker.setVisibility(View.INVISIBLE);
+        mStartMarker.setVisibility(View.INVISIBLE);
+
+
+
+
     }
 
     private Runnable mTimerRunnable = new Runnable() {

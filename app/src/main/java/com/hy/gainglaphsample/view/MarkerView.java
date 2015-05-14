@@ -49,6 +49,8 @@ public class MarkerView extends ImageView {
     private int mVelocity;
     private MarkerListener mListener;
 
+
+
     public MarkerView(Context context, AttributeSet attrs) {
         super(context, attrs);
 

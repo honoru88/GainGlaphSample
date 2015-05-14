@@ -369,7 +369,7 @@ public class WaveformView extends View {
         double fractionalSecs = mOffset * onePixelInSecs;
         int integerSecs = (int) fractionalSecs;
         int i = 0;
-        while (i < width) {
+       /* while (i < width) {
             i++;
             fractionalSecs += onePixelInSecs;
             int integerSecsNew = (int) fractionalSecs;
@@ -379,31 +379,36 @@ public class WaveformView extends View {
                     canvas.drawLine(i, 0, i, measuredHeight, mGridPaint);
                 }
             }
-        }
+        }*/
 
-        // Draw waveform
+        // 파란색 웨이브
         for (i = 0; i < width; i++) {
-            Paint paint;
+            Paint paint = null;
             if (i + start >= mSelectionStart &&
                     i + start < mSelectionEnd) {
                 paint = mSelectedLinePaint;
-            } else {
-                drawWaveformLine(canvas, i, 0, measuredHeight,
+            } else {//뒷라인은 검은색
+                /*drawWaveformLine(canvas, i, 0, measuredHeight,
                         mUnselectedBkgndLinePaint);
-                paint = mUnselectedLinePaint;
+                  paint = mUnselectedLinePaint;
+                        */
+                paint = mSelectedLinePaint;
             }
-            drawWaveformLine(
-                    canvas, i,
-                    ctr - mHeightsAtThisZoomLevel[start + i],
-                    ctr + 1 + mHeightsAtThisZoomLevel[start + i],
-                    paint);
-
+            if (paint != null) {
+                drawWaveformLine(
+                        canvas, i,
+                        ctr - mHeightsAtThisZoomLevel[start + i],
+                        ctr + 1 + mHeightsAtThisZoomLevel[start + i],
+                        paint);
+            }
             if (i + start == mPlaybackPos) {
                 canvas.drawLine(i, 0, i, measuredHeight, mPlaybackLinePaint);
             }
         }
-
-        // If we can see the right edge of the waveform, draw the
+        /**
+         * 남은 범위(검은색)
+         */
+     /*   // If we can see the right edge of the waveform, draw the
         // non-waveform area to the right as unselected
         for (i = width; i < measuredWidth; i++) {
             drawWaveformLine(canvas, i, 0, measuredHeight,
@@ -419,7 +424,7 @@ public class WaveformView extends View {
                 mSelectionEnd - mOffset + 0.5f, 0,
                 mSelectionEnd - mOffset + 0.5f, measuredHeight - 30,
                 mBorderLinePaint);
-
+*/
         // Draw timecode
         double timecodeIntervalSecs = 1.0;
         if (timecodeIntervalSecs / onePixelInSecs < 50) {
@@ -429,7 +434,7 @@ public class WaveformView extends View {
             timecodeIntervalSecs = 15.0;
         }
 
-        // Draw grid
+        // 초단위 그리기
         fractionalSecs = mOffset * onePixelInSecs;
         int integerTimecode = (int) (fractionalSecs / timecodeIntervalSecs);
         i = 0;
