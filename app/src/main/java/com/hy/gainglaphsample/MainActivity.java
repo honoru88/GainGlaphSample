@@ -571,6 +571,8 @@ public class MainActivity extends Activity
         markEndButton.setOnClickListener(mMarkEndListener);
 
         //start end 잠깐제거
+        mStartText.setVisibility(View.INVISIBLE);
+        mEndText.setVisibility(View.INVISIBLE);
         markStartButton.setVisibility(View.INVISIBLE);
         markEndButton.setVisibility(View.INVISIBLE);
         enableDisableButtons();
