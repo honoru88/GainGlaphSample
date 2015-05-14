@@ -582,7 +582,9 @@ public class WaveformView extends View {
                                 mValuesByZoomLevel[j - 1][2 * i + 1]);
             }
         }
-
+        /**
+         * 3개별로 줌 줌선택
+         */
         if (numFrames > 5000) {
             mZoomLevel = 3;
         } else if (numFrames > 1000) {

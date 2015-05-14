@@ -23,6 +23,11 @@ import android.provider.MediaStore;
 
 import java.util.HashMap;
 
+/**
+ * 파일이름,제목,아티스트,음반,시기등 meta정보 추출
+ *
+ *
+ */
 public class SongMetadataReader {
     public Uri GENRES_URI = MediaStore.Audio.Genres.EXTERNAL_CONTENT_URI;
     public Activity mActivity = null;

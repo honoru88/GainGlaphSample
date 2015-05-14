@@ -60,11 +60,7 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 
 
-/**
- * The activity for the Ringdroid main editor window.  Keeps track of
- * the waveform display, current horizontal offset, marker handles,
- * start / end text boxes, and handles all of the buttons and controls.
- */
+
 public class MainActivity extends Activity
         implements MarkerView.MarkerListener,
         WaveformView.WaveformListener
@@ -135,8 +131,8 @@ public class MainActivity extends Activity
     /**
      * This is a special intent action that means "edit a sound file".
      */
-    public static final String EDIT = "com.hy.myapplication.action.EDIT";
-
+   /* public static final String EDIT = "com.hy.myapplication.action.EDIT";
+*/
     //
     // Public methods and protected overrides
     //
@@ -164,7 +160,10 @@ public class MainActivity extends Activity
         // message when the user saves, we should just return whatever
         // they create.
         mWasGetContentIntent = intent.getBooleanExtra("was_get_content_intent", false);
-        mFilename="/system/media/audio/alarms/Alarm_Buzzer.ogg";
+
+       // mFilename="/system/media/audio/alarms/Alarm_Buzzer.ogg";
+        mFilename="/storage/sdcard1/music/어쿠스틱/커피소년-오늘도 굿나잇.mp3";
+
         loadFromFile();
         mSoundFile = null;
         mKeyDown = false;
@@ -640,7 +639,7 @@ public class MainActivity extends Activity
                         long now = getCurrentTime();
                         if (now - mLoadingLastUpdateTime > 100) {
                             mProgressDialog.setProgress(
-                                    (int)(mProgressDialog.getMax() *
+                                    (int) (mProgressDialog.getMax() *
                                             fractionComplete));
                             mLoadingLastUpdateTime = now;
                         }
@@ -1418,9 +1417,9 @@ public class MainActivity extends Activity
                                 .show();
                         finish();
                         break;
-                    case R.id.button_choose_contact:
+                    /*case R.id.button_choose_contact:
                         chooseContactForRingtone(newUri);
-                        break;
+                        break;*/
                     default:
                     case R.id.button_do_nothing:
                         finish();
@@ -1434,7 +1433,7 @@ public class MainActivity extends Activity
         dlog.show();
     }
 
-    private void chooseContactForRingtone(Uri uri) {
+    /*private void chooseContactForRingtone(Uri uri) {
         try {
             Intent intent = new Intent(Intent.ACTION_EDIT, uri);
             intent.setClassName(
@@ -1444,7 +1443,7 @@ public class MainActivity extends Activity
         } catch (Exception e) {
             Log.e("Ringdroid", "Couldn't open Choose Contact window");
         }
-    }
+    }*/
 
     private void onSave() {
         if (mIsPlaying) {

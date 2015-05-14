@@ -24,16 +24,14 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
-/**
- * Represents a draggable start or end marker.
- *
- * Most events are passed back to the client class using a
- * listener interface.
- *
- * This class directly keeps track of its own velocity, though,
- * accelerating as the user holds down the left or right arrows
- * while this control is focused.
- */
+/*드래그 시작 또는 끝 마커를 나타냅니다.
+
+        대부분의 이벤트를 이용하여 클라이언트 클래스로 다시 전달
+        청취자 인터페이스입니다.
+
+        이 클래스는 직접하지만, 자신의 속도를 추적
+        사용자로 가속하면 왼쪽 또는 오른쪽 화살표를 아래로 보유
+        동안이 컨트롤이 초점을 맞추고 있습니다.*/
 public class MarkerView extends ImageView {
 
     public interface MarkerListener {
