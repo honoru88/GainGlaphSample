@@ -1,0 +1,55 @@
+<meta charset="utf-8">
+<html>
+<head>
+    <script type="text/javascript">
+
+    function partConfirm() {
+       window.Android.toastShort( "클릭!" );
+    }
+    function getJson()
+    {
+    window.Android.getValueJson();
+    }
+
+    function setJson(Jsonobject)
+    {
+
+      var log="";
+      for(var i =0; i<Jsonobject.length;i++)
+      {
+       log+= Jsonobject[i].Name +" : "+ Jsonobject[i].Age + "<br> <br>" ;
+
+      }
+      document.getElementById('JsonDiv').innerHTML = log;
+    }
+    //webview -> java로 jsonobject전송
+    function submit()
+    {
+        var JSONObj = new Object();
+        JSONObj.name=document.getElementById('a1').value;
+        JSONObj.play=document.getElementById('a2').value;
+
+        window.Android.toastShort( JSON.stringify(JSONObj));
+    }
+
+
+
+
+
+    </script>
+
+
+</head>
+<body>
+
+<button onclick="getJson()">jsonLoad</button>
+<div id="JsonDiv"></div>
+
+<div id="inputDiv">
+    <input type="text" id="a1" style="width: 50px;"> 는 <input type="text" id="a2"
+                                                              style="width: 50px;"> 합니다.
+    <button onclick="submit()">전송</button>
+
+</div>
+</body>
+</html>
