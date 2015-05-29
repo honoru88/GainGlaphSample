@@ -41,18 +41,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.hy.gainglaphsample.sound.SamplePlayer;
+import com.hy.gainglaphsample.sound.SongMetadataReader;
 import com.hy.gainglaphsample.sound.SoundFile;
+import com.hy.gainglaphsample.view.AfterSaveActionDialog;
+import com.hy.gainglaphsample.view.FileSaveDialog;
 import com.hy.gainglaphsample.view.MarkerView;
 import com.hy.gainglaphsample.view.WaveformView;
-import com.hy.gainglaphsample.sound.SongMetadataReader;
-import com.hy.gainglaphsample.view.FileSaveDialog;
-import com.hy.gainglaphsample.view.AfterSaveActionDialog;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -60,11 +62,9 @@ import java.io.PrintWriter;
 import java.io.RandomAccessFile;
 
 
-
 public class MainActivity extends Activity
         implements MarkerView.MarkerListener,
-        WaveformView.WaveformListener
-{
+        WaveformView.WaveformListener {
     private long mLoadingLastUpdateTime;
     private boolean mLoadingKeepGoing;
     private long mRecordingLastUpdateTime;
@@ -125,6 +125,11 @@ public class MainActivity extends Activity
     private Thread mRecordAudioThread;
     private Thread mSaveSoundFileThread;
 
+    private Button openBtn;
+    private Button recBtn;
+
+
+
     // Result codes
     private static final int REQUEST_CODE_CHOOSE_CONTACT = 1;
 
@@ -136,8 +141,18 @@ public class MainActivity extends Activity
     //
     // Public methods and protected overrides
     //
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (intent.getData() != null) {
+            mFilename = intent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
+            loadFromFile();
+        }
+    }
 
-    /** Called when the activity is first created. */
+    /**
+     * Called when the activity is first created.
+     */
     @Override
     public void onCreate(Bundle icicle) {
         Log.v("Ringdroid", "EditActivity OnCreate");
@@ -161,10 +176,11 @@ public class MainActivity extends Activity
         // they create.
         mWasGetContentIntent = intent.getBooleanExtra("was_get_content_intent", false);
 
-       // mFilename="/system/media/audio/alarms/Alarm_Buzzer.ogg";
-         mFilename="/storage/sdcard1/music/어쿠스틱/커피소년-오늘도 굿나잇.mp3";
 
-        loadFromFile();
+        // mFilename="/system/media/audio/alarms/Alarm_Buzzer.ogg";
+        //mFilename="/storage/sdcard1/music/어쿠스틱/커피소년-오늘도 굿나잇.mp3";
+
+
         mSoundFile = null;
         mKeyDown = false;
 
@@ -172,9 +188,11 @@ public class MainActivity extends Activity
 
         loadGui();
 
-        mHandler.postDelayed(mTimerRunnable, 100);
-
-
+        mHandler.postDelayed(mTimerRunnable, 1000);
+        if (intent.getData() != null) {
+            mFilename = intent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
+            loadFromFile();
+        }
       /*  mFilename = intent.getData().toString().replaceFirst("file://", "").replaceAll("%20", " ");
 
 
@@ -187,6 +205,7 @@ public class MainActivity extends Activity
 
     }
 
+
     private void closeThread(Thread thread) {
         if (thread != null && thread.isAlive()) {
             try {
@@ -196,7 +215,9 @@ public class MainActivity extends Activity
         }
     }
 
-    /** Called when the activity is finally destroyed. */
+    /**
+     * Called when the activity is finally destroyed.
+     */
     @Override
     protected void onDestroy() {
         Log.v("Ringdroid", "EditActivity OnDestroy");
@@ -209,11 +230,11 @@ public class MainActivity extends Activity
         mLoadSoundFileThread = null;
         mRecordAudioThread = null;
         mSaveSoundFileThread = null;
-        if(mProgressDialog != null) {
+        if (mProgressDialog != null) {
             mProgressDialog.dismiss();
             mProgressDialog = null;
         }
-        if(mAlertDialog != null) {
+        if (mAlertDialog != null) {
             mAlertDialog.dismiss();
             mAlertDialog = null;
         }
@@ -229,7 +250,9 @@ public class MainActivity extends Activity
         super.onDestroy();
     }
 
-    /** Called with an Activity we started with an Intent returns. */
+    /**
+     * Called with an Activity we started with an Intent returns.
+     */
     @Override
     protected void onActivityResult(int requestCode,
                                     int resultCode,
@@ -345,7 +368,7 @@ public class MainActivity extends Activity
     }
 
     public void waveformTouchMove(float x) {
-        mOffset = trap((int)(mTouchInitialOffset + (mTouchStart - x)));
+        mOffset = trap((int) (mTouchInitialOffset + (mTouchStart - x)));
         updateDisplay();
     }
 
@@ -357,7 +380,7 @@ public class MainActivity extends Activity
         if (elapsedMsec < 300) {
             if (mIsPlaying) {
                 int seekMsec = mWaveformView.pixelsToMillisecs(
-                        (int)(mTouchStart + mOffset));
+                        (int) (mTouchStart + mOffset));
                 if (seekMsec >= mPlayStartMsec &&
                         seekMsec < mPlayEndMsec) {
                     mPlayer.seekTo(seekMsec);
@@ -365,7 +388,7 @@ public class MainActivity extends Activity
                     handlePause();
                 }
             } else {
-                onPlay((int)(mTouchStart + mOffset));
+                onPlay((int) (mTouchStart + mOffset));
             }
         }
     }
@@ -373,7 +396,7 @@ public class MainActivity extends Activity
     public void waveformFling(float vx) {
         mTouchDragging = false;
         mOffsetGoal = mOffset;
-        mFlingVelocity = (int)(-vx);
+        mFlingVelocity = (int) (-vx);
         updateDisplay();
     }
 
@@ -415,10 +438,10 @@ public class MainActivity extends Activity
         float delta = x - mTouchStart;
 
         if (marker == mStartMarker) {
-            mStartPos = trap((int)(mTouchInitialStartPos + delta));
-            mEndPos = trap((int)(mTouchInitialEndPos + delta));
+            mStartPos = trap((int) (mTouchInitialStartPos + delta));
+            mEndPos = trap((int) (mTouchInitialEndPos + delta));
         } else {
-            mEndPos = trap((int)(mTouchInitialEndPos + delta));
+            mEndPos = trap((int) (mTouchInitialEndPos + delta));
             if (mEndPos < mStartPos)
                 mEndPos = mStartPos;
         }
@@ -532,9 +555,20 @@ public class MainActivity extends Activity
                 .show();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i("wave","onresume"+mWaveformView.getWidth());
+
+        if(mWaveformView.getWidth()!=0)
+             mWidth=mWaveformView.getWidth();
+
+    }
+
     //
     // Internal methods
     //
+
 
     /**
      * Called from both onCreate and onConfigurationChanged
@@ -548,22 +582,40 @@ public class MainActivity extends Activity
         getWindowManager().getDefaultDisplay().getMetrics(metrics);
         mDensity = metrics.density;
 
-        mMarkerLeftInset = (int)(46 * mDensity);
-        mMarkerRightInset = (int)(48 * mDensity);
-        mMarkerTopOffset = (int)(10 * mDensity);
-        mMarkerBottomOffset = (int)(10 * mDensity);
+        mMarkerLeftInset = (int) (46 * mDensity);
+        mMarkerRightInset = (int) (48 * mDensity);
+        mMarkerTopOffset = (int) (10 * mDensity);
+        mMarkerBottomOffset = (int) (10 * mDensity);
 
-        mStartText = (TextView)findViewById(R.id.starttext);
+        mStartText = (TextView) findViewById(R.id.starttext);
         mStartText.addTextChangedListener(mTextWatcher);
-        mEndText = (TextView)findViewById(R.id.endtext);
+        mEndText = (TextView) findViewById(R.id.endtext);
         mEndText.addTextChangedListener(mTextWatcher);
 
-        mPlayButton = (ImageButton)findViewById(R.id.play);
+        mPlayButton = (ImageButton) findViewById(R.id.play);
         mPlayButton.setOnClickListener(mPlayListener);
-        mRewindButton = (ImageButton)findViewById(R.id.rew);
+        mRewindButton = (ImageButton) findViewById(R.id.rew);
         mRewindButton.setOnClickListener(mRewindListener);
-        mFfwdButton = (ImageButton)findViewById(R.id.ffwd);
+        mFfwdButton = (ImageButton) findViewById(R.id.ffwd);
         mFfwdButton.setOnClickListener(mFfwdListener);
+
+        openBtn = (Button) findViewById(R.id.button);
+        openBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent Intent = new Intent(MainActivity.this, SelectActivity.class);
+                Intent.setAction(Intent.ACTION_GET_CONTENT);
+                startActivity(Intent);
+
+            }
+        });
+        recBtn = (Button) findViewById(R.id.btn_rec);
+        recBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+
+                recordAudio();
+
+            }
+        });
 
         TextView markStartButton = (TextView) findViewById(R.id.mark_start);
         markStartButton.setOnClickListener(mMarkStartListener);
@@ -577,10 +629,11 @@ public class MainActivity extends Activity
         markEndButton.setVisibility(View.INVISIBLE);
         enableDisableButtons();
 
-        mWaveformView = (WaveformView)findViewById(R.id.waveform);
+        mWaveformView = (WaveformView) findViewById(R.id.waveform);
         mWaveformView.setListener(this);
+        Log.i("waveform", "mWaveformView" + mWaveformView.getParentWidth() + "," + mWaveformView.getMeasuredWidth());
 
-        mInfo = (TextView)findViewById(R.id.info);
+        mInfo = (TextView) findViewById(R.id.info);
         mInfo.setText(mCaption);
 
         mMaxPos = 0;
@@ -593,20 +646,44 @@ public class MainActivity extends Activity
             mMaxPos = mWaveformView.maxPos();
         }
 
-        mStartMarker = (MarkerView)findViewById(R.id.startmarker);
+        mStartMarker = (MarkerView) findViewById(R.id.startmarker);
         mStartMarker.setListener(this);
         mStartMarker.setAlpha(1f);
         mStartMarker.setFocusable(true);
         mStartMarker.setFocusableInTouchMode(true);
         mStartVisible = true;
 
-        mEndMarker = (MarkerView)findViewById(R.id.endmarker);
+        mEndMarker = (MarkerView) findViewById(R.id.endmarker);
         mEndMarker.setListener(this);
         mEndMarker.setAlpha(1f);
         mEndMarker.setFocusable(true);
         mEndMarker.setFocusableInTouchMode(true);
         mEndVisible = true;
 
+        mWaveformView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+
+            @SuppressWarnings("deprecation")
+            @Override
+            public void onGlobalLayout() {
+                //지금꺼 view에다가 남김 getwidth할때 0일경우가 있음
+                mWaveformView.setParentWidth(mWaveformView.getWidth());
+                mWaveformView.setParentHeight(mWaveformView.getHeight());
+                mWidth = mWaveformView.getWidth();
+
+                Log.i("mWaveformView", "mWidth" + mWidth);
+                //...
+                //do whatever you want with them
+                //...
+                //this is an important step not to keep receiving callbacks:
+                //we should remove this listener
+                //I use the function to remove it based on the api level!
+
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN)
+                    mWaveformView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                else
+                    mWaveformView.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+            }
+        });
 
 
         updateDisplay();
@@ -660,8 +737,8 @@ public class MainActivity extends Activity
         mLoadSoundFileThread = new Thread() {
             public void run() {
                 try {
-                    mSoundFile = SoundFile.create(mFile.getAbsolutePath(),
-                            listener);
+                    mSoundFile = SoundFile.create(mFile.getAbsolutePath(), listener, mWidth);
+
 
                     if (mSoundFile == null) {
                         mProgressDialog.dismiss();
@@ -712,7 +789,7 @@ public class MainActivity extends Activity
                         }
                     };
                     mHandler.post(runnable);
-                } else if (mFinishActivity){
+                } else if (mFinishActivity) {
                     MainActivity.this.finish();
                 }
             }
@@ -751,7 +828,7 @@ public class MainActivity extends Activity
         // On the other hand, if the text is big enough, this is good enough.
         adBuilder.setView(getLayoutInflater().inflate(R.layout.record_audio, null));
         mAlertDialog = adBuilder.show();
-        mTimerTextView = (TextView)mAlertDialog.findViewById(R.id.record_audio_timer);
+        mTimerTextView = (TextView) mAlertDialog.findViewById(R.id.record_audio_timer);
 
         final SoundFile.ProgressListener listener =
                 new SoundFile.ProgressListener() {
@@ -762,8 +839,8 @@ public class MainActivity extends Activity
                             // Only UI thread can update Views such as TextViews.
                             runOnUiThread(new Runnable() {
                                 public void run() {
-                                    int min = (int)(mRecordingTime/60);
-                                    float sec = (float)(mRecordingTime - 60 * min);
+                                    int min = (int) (mRecordingTime / 60);
+                                    float sec = (float) (mRecordingTime - 60 * min);
                                     mTimerTextView.setText(String.format("%d:%05.2f", min, sec));
                                 }
                             });
@@ -777,7 +854,7 @@ public class MainActivity extends Activity
         mRecordAudioThread = new Thread() {
             public void run() {
                 try {
-                    mSoundFile = SoundFile.record(listener);
+                    mSoundFile = SoundFile.record(listener,mWidth);
                     if (mSoundFile == null) {
                         mAlertDialog.dismiss();
                         Runnable runnable = new Runnable() {
@@ -811,7 +888,7 @@ public class MainActivity extends Activity
                     return;
                 }
                 mAlertDialog.dismiss();
-                if (mFinishActivity){
+                if (mFinishActivity) {
                     MainActivity.this.finish();
                 } else {
                     Runnable runnable = new Runnable() {
@@ -843,12 +920,14 @@ public class MainActivity extends Activity
         if (mEndPos > mMaxPos)
             mEndPos = mMaxPos;
 
-        mCaption =
+        mCaption = "체널:" + mSoundFile.getChannels() + "," +
+                "프레임:" + mSoundFile.getFrameGains().length + "," +
+                "샘플프래임:" + mSoundFile.getSamplesPerFrame() + "," +
                 mSoundFile.getFiletype() + ", " +
-                        mSoundFile.getSampleRate() + " Hz, " +
-                        mSoundFile.getAvgBitrateKbps() + " kbps, " +
-                        formatTime(mMaxPos) + " " +
-                        getResources().getString(R.string.time_seconds);
+                mSoundFile.getSampleRate() + " Hz, " +
+                mSoundFile.getAvgBitrateKbps() + " kbps, " +
+                formatTime(mMaxPos) + " " +
+                getResources().getString(R.string.time_seconds);
         mInfo.setText(mCaption);
 
         updateDisplay();
@@ -980,8 +1059,6 @@ public class MainActivity extends Activity
         mStartMarker.setVisibility(View.INVISIBLE);
 
 
-
-
     }
 
     private Runnable mTimerRunnable = new Runnable() {
@@ -1069,8 +1146,8 @@ public class MainActivity extends Activity
     }
 
     private String formatDecimal(double x) {
-        int xWhole = (int)x;
-        int xFrac = (int)(100 * (x - xWhole) + 0.5);
+        int xWhole = (int) x;
+        int xFrac = (int) (100 * (x - xWhole) + 0.5);
 
         if (xFrac >= 100) {
             xWhole++; //Round up
@@ -1177,7 +1254,7 @@ public class MainActivity extends Activity
         if (!externalRootDir.endsWith("/")) {
             externalRootDir += "/";
         }
-        switch(mNewFileKind) {
+        switch (mNewFileKind) {
             default:
             case FileSaveDialog.FILE_KIND_MUSIC:
                 // TODO(nfaralli): can directly use Environment.getExternalStoragePublicDirectory(
@@ -1249,7 +1326,7 @@ public class MainActivity extends Activity
         double endTime = mWaveformView.pixelsToSeconds(mEndPos);
         final int startFrame = mWaveformView.secondsToFrames(startTime);
         final int endFrame = mWaveformView.secondsToFrames(endTime);
-        final int duration = (int)(endTime - startTime + 0.5);
+        final int duration = (int) (endTime - startTime + 0.5);
 
         // Create an indeterminate progress dialog
         mProgressDialog = new ProgressDialog(this);
@@ -1280,7 +1357,8 @@ public class MainActivity extends Activity
                                     return true;  // Keep going
                                 }
                             };
-                    SoundFile.create(outPath, listener);
+                    SoundFile.create(outPath, listener, mWidth);
+
                 } catch (Exception e) {
                     mProgressDialog.dismiss();
 
@@ -1469,7 +1547,7 @@ public class MainActivity extends Activity
 
         final Handler handler = new Handler() {
             public void handleMessage(Message response) {
-                CharSequence newTitle = (CharSequence)response.obj;
+                CharSequence newTitle = (CharSequence) response.obj;
                 mNewFileKind = response.arg1;
                 saveRingtone(newTitle);
             }
@@ -1576,4 +1654,5 @@ public class MainActivity extends Activity
         e.printStackTrace(writer);
         return stream.toString();
     }
+
 }

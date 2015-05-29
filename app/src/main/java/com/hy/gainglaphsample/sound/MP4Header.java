@@ -195,16 +195,16 @@ class Atom {  // note: latest versions of spec simply call it 'box' instead of '
 }
 
 public class MP4Header {
-    private int[] mFrameSize;    // size of each AAC frames, in bytes. First one should be 2.
-    private int mMaxFrameSize;   // size of the biggest frame.
-    private int mTotSize;        // size of the AAC stream.
-    private int mBitrate;        // bitrate used to encode the AAC stream.
-    private byte[] mTime;        // time used for 'creation time' and 'modification time' fields.
-    private byte[] mDurationMS;  // duration of stream in milliseconds.
-    private byte[] mNumSamples;  // number of samples in the stream.
-    private byte[] mHeader;      // the complete header.
-    private int mSampleRate;     // sampling frequency in Hz (e.g. 44100).
-    private int mChannels;       // number of channels.
+    private int[] mFrameSize;    // size of each AAC frames, in bytes. First one should be 2. 바이트의 각 AAC 프레임의 크기입니다. 첫 번째는 2이어야합니다.
+    private int mMaxFrameSize;   // size of the biggest frame. 가장 큰 프레임의 크기입니다.
+    private int mTotSize;        // size of the AAC stream. AAC 스트림의 크기입니다.
+    private int mBitrate;        // bitrate used to encode the AAC stream. AAC 스트림을 인코딩하는 데 사용되는 전송률이.
+    private byte[] mTime;        // time used for 'creation time' and 'modification time' fields.   '창조의 시간'과 '수정 시간'필드에 사용되는 시간입니다.
+    private byte[] mDurationMS;  // duration of stream in milliseconds.   (밀리 초) 스트림의 기간입니다.
+    private byte[] mNumSamples;  // number of samples in the stream.  스트림에서 샘플 수.
+    private byte[] mHeader;      // the complete header. 전체 헤더.
+    private int mSampleRate;     // sampling frequency in Hz (e.g. 44100). Hz 단위 샘플링 주파수 (예를 들어 44100).
+    private int mChannels;       // number of channels. 채널 수.
 
     // Creates a new MP4Header object that should be used to generate an .m4a file header.
     public MP4Header(int sampleRate, int numChannels, int[] frame_size, int bitrate) {

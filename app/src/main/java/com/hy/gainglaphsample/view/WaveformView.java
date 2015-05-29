@@ -91,6 +91,8 @@ public class WaveformView extends View {
     private GestureDetector mGestureDetector;
     private ScaleGestureDetector mScaleGestureDetector;
     private boolean mInitialized;
+    private int parentWidth;
+    private int parentHeight;
 
     public WaveformView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -184,6 +186,25 @@ public class WaveformView extends View {
         mSelectionEnd = 0;
         mDensity = 1.0f;
         mInitialized = false;
+        parentWidth=0;
+        parentHeight=0;
+    }
+
+    public void setParentWidth(int parentWidth) {
+        if(parentWidth!=0)
+            this.parentWidth = parentWidth;
+    }
+
+    public void setParentHeight(int parentHeight) {
+        if(parentHeight!=0)
+            this.parentHeight = parentHeight;
+    }
+
+    public int getParentWidth(){
+        return parentWidth;
+    }
+    public int getParentHeight(){
+        return parentHeight;
     }
 
     @Override
@@ -397,8 +418,8 @@ public class WaveformView extends View {
             if (paint != null) {
                 drawWaveformLine(
                         canvas, i,
-                        ctr - mHeightsAtThisZoomLevel[start + i],
-                        ctr + 1 + mHeightsAtThisZoomLevel[start + i],
+                        (ctr - mHeightsAtThisZoomLevel[start + i])/2,
+                        (ctr + 1 + mHeightsAtThisZoomLevel[start + i])/2,
                         paint);
             }
             if (i + start == mPlaybackPos) {
@@ -435,7 +456,7 @@ public class WaveformView extends View {
         }
 
         // 초단위 그리기
-        fractionalSecs = mOffset * onePixelInSecs;
+    /*    fractionalSecs = mOffset * onePixelInSecs;
         int integerTimecode = (int) (fractionalSecs / timecodeIntervalSecs);
         i = 0;
         while (i < width) {
@@ -461,7 +482,7 @@ public class WaveformView extends View {
                         (int) (12 * mDensity),
                         mTimecodePaint);
             }
-        }
+        }*/
 
         if (mListener != null) {
             mListener.waveformDraw();
@@ -590,7 +611,8 @@ public class WaveformView extends View {
         /**
          * 3개별로 줌 줌선택
          */
-        if (numFrames > 5000) {
+        mZoomLevel = 1;
+        /*if (numFrames > 5000) {
             mZoomLevel = 3;
         } else if (numFrames > 1000) {
             mZoomLevel = 2;
@@ -598,7 +620,7 @@ public class WaveformView extends View {
             mZoomLevel = 1;
         } else {
             mZoomLevel = 0;
-        }
+        }*/
 
         mInitialized = true;
     }

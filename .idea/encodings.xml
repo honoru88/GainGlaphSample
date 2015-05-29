@@ -4,6 +4,8 @@
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/hy/gainglaphsample/MainActivity.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/hy/gainglaphsample/sound/SoundFile.java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/src/main/java/com/hy/gainglaphsample/view/WaveformView.java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/media_select.xml" charset="x-windows-949" />
+    <file url="file://$PROJECT_DIR$/app/src/main/res/layout/media_select_row.xml" charset="x-windows-949" />
     <file url="PROJECT" charset="UTF-8" />
   </component>
 </project>
