@@ -48,22 +48,8 @@ public class WebViewInterface {
     public void recode(String value) { // Show toast for a short time
 
         RecordDialog dialog = new RecordDialog( mContext ) ;
+        dialog.setTitle(value);
         dialog.show() ;
-
-        try {
-
-
-            /*mContext.runOnUiThread(new Runnable() {
-
-                public void run() {
-                    Toast.makeText(mContext, "이름:", Toast.LENGTH_SHORT).show();
-                }
-            });*/
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**

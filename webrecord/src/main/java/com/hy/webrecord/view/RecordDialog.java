@@ -33,6 +33,8 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     private static final int ACTION_TYPE_SETSCROLL = 1;
 
     private Button btn_recrod;
+    private Button btn_play;
+    private Button btn_stop;
 
 
     private File mFile;
@@ -96,6 +98,8 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
         //mWaveformView.setListener(this);
         btn_recrod = (Button) findViewById(R.id.btn_rec);
         btn_recrod.setOnClickListener(this);
+        btn_play = (Button) findViewById(R.id.btn_play);
+        btn_play.setOnClickListener(this);
 
        /* DisplayMetrics metrics = new DisplayMetrics();
         mContext.getgetDefaultDisplay().getMetrics(metrics);*/
@@ -128,13 +132,9 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
         // Record the audio stream in a background thread
         mRecordAudioThread = new Thread() {
             public void run() {
-                mSoundFile = SoundFile.record(listener, 300);
+                mSoundFile = SoundFile.record(listener, getWindow().getDecorView().getWidth());
                 mPlayer = new SamplePlayer(mSoundFile);
-               /* ExampleAsyncTask exampleAsyncTask = new ExampleAsyncTask();
-                exampleAsyncTask.execute("a");*/
                 finishOpeningSoundFile();
-
-
             }
         };
         mRecordAudioThread.start();
@@ -157,14 +157,14 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
         if (mEndPos > mMaxPos)
             mEndPos = mMaxPos;
 
-        mCaption = "체널:" + mSoundFile.getChannels() + "," +
+       /* mCaption = "체널:" + mSoundFile.getChannels() + "," +
                 "프레임:" + mSoundFile.getFrameGains().length + "," +
                 "샘플프래임:" + mSoundFile.getSamplesPerFrame() + "," +
                 mSoundFile.getFiletype() + ", " +
                 mSoundFile.getSampleRate() + " Hz, " +
                 mSoundFile.getAvgBitrateKbps() + " kbps, " +
                 formatTime(mMaxPos) + " " +
-                mContext.getResources().getString(R.string.time_seconds);
+                mContext.getResources().getString(R.string.time_seconds);*/
         //  mInfo.setText(mCaption);
 
         updateDisplay();
@@ -183,8 +183,6 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     }
 
     private synchronized void updateDisplay() {
-
-
         if (mIsPlaying) {
             int now = mPlayer.getCurrentPosition();
             int frames = mWaveformView.millisecsToPixels(now);
@@ -239,84 +237,6 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
 
         mWaveformView.setParameters(mStartPos, mEndPos, mOffset);//움직이는 거 반영
         sendActionMsg(ACTION_TYPE_SETTEXT, "테스트");
-        ((Activity) mContext).runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-
-
-
-            }
-        });
-
-       /* mStartMarker.setContentDescription(
-                getResources().getText(R.string.start_marker) + " " +
-                        formatTime(mStartPos));
-        mEndMarker.setContentDescription(
-                getResources().getText(R.string.end_marker) + " " +
-                        formatTime(mEndPos));
-
-        int startX = mStartPos - mOffset - mMarkerLeftInset;
-        if (startX + mStartMarker.getWidth() >= 0) {
-            if (!mStartVisible) {
-                // Delay this to avoid flicker
-                mHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        mStartVisible = true;
-                        mStartMarker.setAlpha(1f);
-                    }
-                }, 0);
-            }
-        } else {
-            if (mStartVisible) {
-                mStartMarker.setAlpha(0f);
-                mStartVisible = false;
-            }
-            startX = 0;
-        }
-
-        int endX = mEndPos - mOffset - mEndMarker.getWidth() + mMarkerRightInset;
-        if (endX + mEndMarker.getWidth() >= 0) {
-            if (!mEndVisible) {
-                // Delay this to avoid flicker
-                mHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        mEndVisible = true;
-                        mEndMarker.setAlpha(1f);
-                    }
-                }, 0);
-            }
-        } else {
-            if (mEndVisible) {
-                mEndMarker.setAlpha(0f);
-                mEndVisible = false;
-            }
-            endX = 0;
-        }
-
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(
-                startX,
-                mMarkerTopOffset,
-                -mStartMarker.getWidth(),
-                -mStartMarker.getHeight());
-        mStartMarker.setLayoutParams(params);//왼쪽 마커 위치 이동
-
-        params = new RelativeLayout.LayoutParams(
-                RelativeLayout.LayoutParams.WRAP_CONTENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        params.setMargins(
-                endX,
-                mWaveformView.getMeasuredHeight() - mEndMarker.getHeight() - mMarkerBottomOffset,
-                -mStartMarker.getWidth(),
-                -mStartMarker.getHeight());
-        mEndMarker.setLayoutParams(params);//오른쪽 마커 위치이동
-        mEndMarker.setVisibility(View.INVISIBLE);
-        mStartMarker.setVisibility(View.INVISIBLE);*/
-
-
     }
 
     private void setOffsetGoalNoUpdate(int offset) {
@@ -403,52 +323,12 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
                     recordAudio();
                 } else {
                     mRecordingKeepGoing = false;
-
-
                 }
-
-               /* ExampleAsyncTask aa = new ExampleAsyncTask();
-
-                aa.execute("a");*/
-                //finishOpeningSoundFile();
                 break;
-        }
+            case R.id.btn_play:
+                mPlayer.start();
+                break;
 
-    }
-
-    class ExampleAsyncTask extends AsyncTask<String, Integer, Long> {
-
-        @Override
-        protected void onCancelled() {
-            super.onCancelled();
-        }
-
-        @Override
-        protected void onPostExecute(Long result) {
-
-            super.onPostExecute(result);
-
-            //finishOpeningSoundFile();
-        }
-
-        @Override
-        protected void onPreExecute() {
-            finishOpeningSoundFile();
-
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onProgressUpdate(Integer... values) {
-
-            super.onProgressUpdate(values);
-        }
-
-        @Override
-        protected Long doInBackground(String... params) {
-            long result = 0;
-
-            return result;
         }
     }
 
