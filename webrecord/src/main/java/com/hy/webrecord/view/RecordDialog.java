@@ -1,12 +1,16 @@
 package com.hy.webrecord.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.os.Handler;
+import android.os.Message;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -21,7 +25,16 @@ import java.io.File;
  */
 
 
-public class RecordDialog extends Dialog {
+public class RecordDialog extends Dialog implements View.OnClickListener {
+    private static final String ACTION_KEY_TYPE = "ActionKeyType";
+    private static final String ACTION_KEY_VALUE = "ActionKeyValue";
+
+    private static final int ACTION_TYPE_SETTEXT = 0;
+    private static final int ACTION_TYPE_SETSCROLL = 1;
+
+    private Button btn_recrod;
+
+
     private File mFile;
     private String mFilename;
     private String mArtist;
@@ -70,8 +83,26 @@ public class RecordDialog extends Dialog {
     public RecordDialog(Context context) {
         super(context);
         mContext = context;
+        mHandler = new Handler();
+
     }
 
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.record_audio);
+
+        mWaveformView = (WaveformView) findViewById(R.id.waveform);
+        //mWaveformView.setListener(this);
+        btn_recrod = (Button) findViewById(R.id.btn_rec);
+        btn_recrod.setOnClickListener(this);
+
+       /* DisplayMetrics metrics = new DisplayMetrics();
+        mContext.getgetDefaultDisplay().getMetrics(metrics);*/
+        mDensity = 100;
+
+        //recordAudio();
+    }
 
     private void recordAudio() {
         mFile = null;
@@ -81,39 +112,14 @@ public class RecordDialog extends Dialog {
         mRecordingLastUpdateTime = getCurrentTime();
         mRecordingKeepGoing = true;
         mFinishActivity = false;
-        AlertDialog.Builder adBuilder = new AlertDialog.Builder(mContext);
-        adBuilder.setTitle(mContext.getResources().getText(R.string.progress_dialog_recording));
-        adBuilder.setCancelable(true);
-        adBuilder.setNegativeButton(
-                mContext.getResources().getText(R.string.progress_dialog_cancel),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mRecordingKeepGoing = false;
-                        mFinishActivity = true;
-                    }
-                });
-        adBuilder.setPositiveButton(
-                mContext.getResources().getText(R.string.progress_dialog_stop),
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        mRecordingKeepGoing = false;
-                    }
-                });
-        // TODO(nfaralli): try to use a FrameLayout and pass it to the following inflate call.
-        // Using null, android:layout_width etc. may not work (hence text is at the top of view).
-        // On the other hand, if the text is big enough, this is good enough.
-        //adBuilder.setView(this.inflate(R.layout.record_audio, null));
-        mAlertDialog = adBuilder.show();
-        mTimerTextView = (TextView) mAlertDialog.findViewById(R.id.record_audio_timer);
-
         final SoundFile.ProgressListener listener =
                 new SoundFile.ProgressListener() {
                     public boolean reportProgress(double elapsedTime) {
 
-                        ExampleAsyncTask aa = new ExampleAsyncTask();
+                       /* ExampleAsyncTask aa = new ExampleAsyncTask();
 
                         aa.execute("a");
-
+*/
 
                         return mRecordingKeepGoing;
                     }
@@ -122,51 +128,13 @@ public class RecordDialog extends Dialog {
         // Record the audio stream in a background thread
         mRecordAudioThread = new Thread() {
             public void run() {
-                //  try {
-                mSoundFile = SoundFile.record(listener, mWidth);
-               /*     if (mSoundFile == null) {
-                        mAlertDialog.dismiss();
-                        Runnable runnable = new Runnable() {
-                            public void run() {
-                                showFinalAlert(
-                                        new Exception(),
-                                        mContext.getResources().getText(R.string.record_error)
-                                );
-                            }
-                        };
-                        mHandler.post(runnable);*/
-                // return;
-                // }
+                mSoundFile = SoundFile.record(listener, 300);
                 mPlayer = new SamplePlayer(mSoundFile);
-                //  } catch (final Exception e) {
-                  /*  mAlertDialog.dismiss();
-                    e.printStackTrace();
-                    mInfoContent = e.toString();
-                    runOnUiThread(new Runnable() {
-                        public void run() {
-                            mInfo.setText(mInfoContent);
-                        }
-                    });*/
+               /* ExampleAsyncTask exampleAsyncTask = new ExampleAsyncTask();
+                exampleAsyncTask.execute("a");*/
+                finishOpeningSoundFile();
 
-                   /* Runnable runnable = new Runnable() {
-                        public void run() {
-                            showFinalAlert(e, mContext.getResources().getText(R.string.record_error));
-                        }
-                    };
-                    mHandler.post(runnable);*/
-                  /*  return;
-                }*/
-                mAlertDialog.dismiss();
-                if (mFinishActivity) {
-                    //MainActivity.this.finish();
-                } else {
-                    Runnable runnable = new Runnable() {
-                        public void run() {
-                            finishOpeningSoundFile();
-                        }
-                    };
-                    mHandler.post(runnable);
-                }
+
             }
         };
         mRecordAudioThread.start();
@@ -197,7 +165,7 @@ public class RecordDialog extends Dialog {
                 mSoundFile.getAvgBitrateKbps() + " kbps, " +
                 formatTime(mMaxPos) + " " +
                 mContext.getResources().getString(R.string.time_seconds);
-        mInfo.setText(mCaption);
+        //  mInfo.setText(mCaption);
 
         updateDisplay();
     }
@@ -270,7 +238,16 @@ public class RecordDialog extends Dialog {
         }
 
         mWaveformView.setParameters(mStartPos, mEndPos, mOffset);//움직이는 거 반영
-        mWaveformView.invalidate();
+        sendActionMsg(ACTION_TYPE_SETTEXT, "테스트");
+        ((Activity) mContext).runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+
+
+
+            }
+        });
 
        /* mStartMarker.setContentDescription(
                 getResources().getText(R.string.start_marker) + " " +
@@ -416,6 +393,29 @@ public class RecordDialog extends Dialog {
         }
     }
 
+    @Override
+    public void onClick(View v) {
+
+        switch (v.getId()) {
+            case R.id.btn_rec:
+                btn_recrod.setSelected(!btn_recrod.isSelected());
+                if (btn_recrod.isSelected()) {
+                    recordAudio();
+                } else {
+                    mRecordingKeepGoing = false;
+
+
+                }
+
+               /* ExampleAsyncTask aa = new ExampleAsyncTask();
+
+                aa.execute("a");*/
+                //finishOpeningSoundFile();
+                break;
+        }
+
+    }
+
     class ExampleAsyncTask extends AsyncTask<String, Integer, Long> {
 
         @Override
@@ -427,10 +427,13 @@ public class RecordDialog extends Dialog {
         protected void onPostExecute(Long result) {
 
             super.onPostExecute(result);
+
+            //finishOpeningSoundFile();
         }
 
         @Override
         protected void onPreExecute() {
+            finishOpeningSoundFile();
 
             super.onPreExecute();
         }
@@ -448,4 +451,50 @@ public class RecordDialog extends Dialog {
             return result;
         }
     }
+
+    //핸들러 호출 함수
+    private void sendActionMsg(int action, String value) {
+        Message msg = mActionHandler.obtainMessage();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(ACTION_KEY_TYPE, action);
+        bundle.putString(ACTION_KEY_VALUE, value);
+
+        msg.setData(bundle);
+        mActionHandler.sendMessage(msg);
+    }
+
+    private void sendActionMsg(int action, int value) {
+        Message msg = mActionHandler.obtainMessage();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt(ACTION_KEY_TYPE, action);
+        bundle.putInt(ACTION_KEY_VALUE, value);
+
+        msg.setData(bundle);
+        mActionHandler.sendMessage(msg);
+    }
+
+    //핸들러
+    public Handler mActionHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            mWaveformView.invalidate();
+         /*   Bundle data = msg.getData();
+*/
+           /* switch(data.getInt(ACTION_KEY_TYPE)) {
+                case ACTION_TYPE_SETTEXT:
+                    String strvalue = data.getString(ACTION_KEY_VALUE);
+                    mTextView.setText(strvalue);
+
+                    break;
+
+                case ACTION_TYPE_SETSCROLL:
+                    int intvalue = data.getInt(ACTION_KEY_VALUE);
+                    mLayout.scrollTo(0, intvalue);
+
+                    break;
+            }*/
+        }
+    };
+
 }

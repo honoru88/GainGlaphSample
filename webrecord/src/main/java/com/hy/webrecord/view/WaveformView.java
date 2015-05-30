@@ -187,24 +187,25 @@ public class WaveformView extends View {
         mSelectionEnd = 0;
         mDensity = 1.0f;
         mInitialized = false;
-        parentWidth=0;
-        parentHeight=0;
+        parentWidth = 0;
+        parentHeight = 0;
     }
 
     public void setParentWidth(int parentWidth) {
-        if(parentWidth!=0)
+        if (parentWidth != 0)
             this.parentWidth = parentWidth;
     }
 
     public void setParentHeight(int parentHeight) {
-        if(parentHeight!=0)
+        if (parentHeight != 0)
             this.parentHeight = parentHeight;
     }
 
-    public int getParentWidth(){
+    public int getParentWidth() {
         return parentWidth;
     }
-    public int getParentHeight(){
+
+    public int getParentHeight() {
         return parentHeight;
     }
 
@@ -357,7 +358,7 @@ public class WaveformView extends View {
         mDensity = density;
         mTimecodePaint.setTextSize((int) (12 * density));
 
-        invalidate();
+        // invalidate();
     }
 
     protected void drawWaveformLine(Canvas canvas,
@@ -419,34 +420,15 @@ public class WaveformView extends View {
             if (paint != null) {
                 drawWaveformLine(
                         canvas, i,
-                        (ctr - mHeightsAtThisZoomLevel[start + i])/2,
-                        (ctr + 1 + mHeightsAtThisZoomLevel[start + i])/2,
+                        (ctr - mHeightsAtThisZoomLevel[start + i]) / 2,
+                        (ctr + 1 + mHeightsAtThisZoomLevel[start + i]) / 2,
                         paint);
             }
             if (i + start == mPlaybackPos) {
                 canvas.drawLine(i, 0, i, measuredHeight, mPlaybackLinePaint);
             }
         }
-        /**
-         * 남은 범위(검은색)
-         */
-     /*   // If we can see the right edge of the waveform, draw the
-        // non-waveform area to the right as unselected
-        for (i = width; i < measuredWidth; i++) {
-            drawWaveformLine(canvas, i, 0, measuredHeight,
-                    mUnselectedBkgndLinePaint);
-        }
 
-        // Draw borders
-        canvas.drawLine(
-                mSelectionStart - mOffset + 0.5f, 30,
-                mSelectionStart - mOffset + 0.5f, measuredHeight,
-                mBorderLinePaint);
-        canvas.drawLine(
-                mSelectionEnd - mOffset + 0.5f, 0,
-                mSelectionEnd - mOffset + 0.5f, measuredHeight - 30,
-                mBorderLinePaint);
-*/
         // Draw timecode
         double timecodeIntervalSecs = 1.0;
         if (timecodeIntervalSecs / onePixelInSecs < 50) {
