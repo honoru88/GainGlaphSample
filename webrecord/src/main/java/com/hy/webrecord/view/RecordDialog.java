@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
@@ -103,7 +104,8 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
 
        /* DisplayMetrics metrics = new DisplayMetrics();
         mContext.getgetDefaultDisplay().getMetrics(metrics);*/
-        mDensity = 100;
+        DisplayMetrics metrics = new DisplayMetrics();
+         mDensity = metrics.density;
 
         //recordAudio();
     }

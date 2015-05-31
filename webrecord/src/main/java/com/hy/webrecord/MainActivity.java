@@ -19,7 +19,6 @@ public class MainActivity extends ActionBarActivity {
     private WebView mWebView;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,15 +42,14 @@ public class MainActivity extends ActionBarActivity {
 
 
         mWebView.setWebViewClient(new WebViewClientClass());
-        mWebView.addJavascriptInterface(new WebViewInterface(this,mWebView), "Android"); // eventDetail : 클라이언트에서 사용할 이름
+        mWebView.addJavascriptInterface(new WebViewInterface(this, mWebView), "Android"); // eventDetail : 클라이언트에서 사용할 이름
 
-        if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mWebView.setWebContentsDebuggingEnabled(true);
         }
 
 
     }
-
 
 
     private class WebViewClientClass extends WebViewClient {
@@ -68,11 +66,6 @@ public class MainActivity extends ActionBarActivity {
     private void setLayout() {
         mWebView = (WebView) findViewById(R.id.webview);
     }
-
-
-
-
-
 
 
 }

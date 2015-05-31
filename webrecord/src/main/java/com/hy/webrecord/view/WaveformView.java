@@ -211,7 +211,7 @@ public class WaveformView extends View {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        mScaleGestureDetector.onTouchEvent(event);
+      /*  mScaleGestureDetector.onTouchEvent(event);
         if (mGestureDetector.onTouchEvent(event)) {
             return true;
         }
@@ -226,7 +226,7 @@ public class WaveformView extends View {
             case MotionEvent.ACTION_UP:
                 mListener.waveformTouchEnd();
                 break;
-        }
+        }*/
         return true;
     }
 
@@ -378,7 +378,7 @@ public class WaveformView extends View {
 
         // Draw waveform
         int measuredWidth = getMeasuredWidth();
-        int measuredHeight = getMeasuredHeight();
+        int measuredHeight = getMeasuredHeight() * 2;
         int start = mOffset;
         int width = mHeightsAtThisZoomLevel.length - start;
         int ctr = measuredHeight / 2;
@@ -417,11 +417,12 @@ public class WaveformView extends View {
                         */
                 paint = mSelectedLinePaint;
             }
+
             if (paint != null) {
                 drawWaveformLine(
                         canvas, i,
                         (ctr - mHeightsAtThisZoomLevel[start + i]) / 2,
-                        (ctr + 1 + mHeightsAtThisZoomLevel[start + i]) / 2,
+                        (ctr + 2 + mHeightsAtThisZoomLevel[start + i]) / 2,
                         paint);
             }
             if (i + start == mPlaybackPos) {

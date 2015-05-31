@@ -344,7 +344,7 @@ public class SoundFile {
         int gain, value;
         int frameLens = (int) ((1000 * mAvgBitRate / 8) *
                 ((float) getSamplesPerFrame() / mSampleRate));
-        int sampleValue=(int)(mNumSamples/mNumFrames); // (전체/넓이)
+        int sampleValue = (int) (mNumSamples / mNumFrames); // (전체/넓이)
         for (i = 0; i < mNumFrames; i++) {
             gain = -1;
             for (j = 0; j < sampleValue; j++) {
@@ -440,7 +440,7 @@ public class SoundFile {
         mFrameOffsets = null;  // not needed for recorded audio
         int i, j;
         int gain, value;
-        int sampleValue=(int)(mNumSamples/mNumFrames); // (전체/넓이)
+        int sampleValue = (int) (mNumSamples / mNumFrames); // (전체/넓이)
         try {
             for (i = 0; i < mNumFrames; i++) {
                 gain = -1;

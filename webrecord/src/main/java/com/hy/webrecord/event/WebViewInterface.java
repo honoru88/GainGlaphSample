@@ -47,9 +47,9 @@ public class WebViewInterface {
     @JavascriptInterface
     public void recode(String value) { // Show toast for a short time
 
-        RecordDialog dialog = new RecordDialog( mContext ) ;
+        RecordDialog dialog = new RecordDialog(mContext);
         dialog.setTitle(value);
-        dialog.show() ;
+        dialog.show();
     }
 
     /**
