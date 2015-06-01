@@ -37,39 +37,55 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     private Button btn_play;
     private Button btn_stop;
 
-
     private File mFile;
+
     private String mFilename;
     private String mArtist;
     private String mTitle;
+    private String mCaption = "";
+    private String mInfoContent;
+
+
     private Context mContext;
+
     private long mLoadingLastUpdateTime;
-    private boolean mLoadingKeepGoing;
     private long mRecordingLastUpdateTime;
+
+    private boolean mLoadingKeepGoing;
     private boolean mRecordingKeepGoing;
+
     private double mRecordingTime;
+
     private Thread mLoadSoundFileThread;
     private Thread mRecordAudioThread;
     private Thread mSaveSoundFileThread;
+
     private AlertDialog mAlertDialog;
+
     private ProgressDialog mProgressDialog;
+
     private TextView mTimerTextView;
+
     private SoundFile mSoundFile;
+
     private Handler mHandler;
+
     private SamplePlayer mPlayer;
 
-    private String mInfoContent;
     private TextView mInfo;
+
     private WaveformView mWaveformView;
+
     private boolean mIsPlaying;
     private boolean mTouchDragging;
     private boolean mFinishActivity;
+
     private float mDensity;
+
     private int mWidth;
     private int mMaxPos;
     private int mStartPos;
     private int mEndPos;
-
     private int mLastDisplayedStartPos;
     private int mLastDisplayedEndPos;
     private int mOffset;
@@ -77,11 +93,9 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     private int mFlingVelocity;
     private int mPlayStartMsec;
     private int mPlayEndMsec;
-    private String mCaption = "";
 
     private ImageButton mPlayButton;
     private ImageButton mRewindButton;
-    private ImageButton mFfwdButton;
 
     public RecordDialog(Context context) {
         super(context);
@@ -294,7 +308,7 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     }
 
     /**
-     * 일시정지
+     * 일시정지(안씀)
      */
     private synchronized void handlePause() {
         if (mPlayer != null && mPlayer.isPlaying()) {
@@ -305,6 +319,9 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
         enableDisableButtons();
     }
 
+    /**
+     * 버튼상태 변경(안씀)
+     */
     private void enableDisableButtons() {
         if (mIsPlaying) {
             mPlayButton.setImageResource(android.R.drawable.ic_media_pause);

@@ -1,7 +1,6 @@
 package com.hy.webrecord.event;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
@@ -20,6 +19,7 @@ public class WebViewInterface {
     private WebView mAppView;
     private Activity mContext;
 
+
     /**
      * 생성자.
      *
@@ -29,6 +29,7 @@ public class WebViewInterface {
     public WebViewInterface(Activity activity, WebView view) {
         mAppView = view;
         mContext = activity;
+
     }
 
     /**
