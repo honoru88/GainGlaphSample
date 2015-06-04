@@ -15,22 +15,18 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.hy.webrecord.html.ParsingHtml;
 import com.hy.webrecord.sound.SamplePlayer;
 import com.hy.webrecord.sound.SoundFile;
 import com.hy.webrecord.view.WaveformView;
 
-import org.json.JSONException;
-
 import java.io.File;
-import java.io.IOException;
 
 
 public class MainActivity extends Activity {
 
     private WebView mWebView;
 
-   // private RecordSample recordSample;
+    // private RecordSample recordSample;
 
 
     private static final String ACTION_KEY_TYPE = "ActionKeyType";
@@ -101,11 +97,10 @@ public class MainActivity extends Activity {
     private int mPlayEndMsec;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main2);
 
         setLayout();
         mHandler = new Handler();
@@ -131,7 +126,8 @@ public class MainActivity extends Activity {
 
         //mWebView.addJavascriptInterface(new WebViewInterface(), "Android"); // eventDetail : 클라이언트에서 사용할 이름
 
-        ParsingHtml parsingHtml = new ParsingHtml(this);
+        mWebView.loadUrl("file:///android_asset/test/track.html");
+       /* ParsingHtml parsingHtml = new ParsingHtml(this);
 
         try {
             mWebView.loadDataWithBaseURL("", parsingHtml.test("file:///android_asset/test2.html"), "text/html", "UTF-8", "");
@@ -139,7 +135,7 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mWebView.setWebContentsDebuggingEnabled(true);
         }
@@ -165,7 +161,7 @@ public class MainActivity extends Activity {
 
     }
 
-    public  void recordAudio() {
+    public void recordAudio() {
         mFile = null;
         mTitle = null;
         mArtist = null;
@@ -471,7 +467,6 @@ public class MainActivity extends Activity {
         });
 
     }
-
 
 
 }

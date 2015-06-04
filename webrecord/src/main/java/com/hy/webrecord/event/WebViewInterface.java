@@ -75,6 +75,10 @@ public class WebViewInterface {
 
     }
 
+    /**
+     * 테스트 데이터
+     * @throws JSONException
+     */
     @JavascriptInterface
     public void getValueJson() throws JSONException {
         final JSONArray jArray = new JSONArray();
@@ -98,7 +102,7 @@ public class WebViewInterface {
 
         final JSONArray result = jArray;
 
-
+        //UI변경
         mContext.runOnUiThread(new Runnable() {
 
             public void run() {

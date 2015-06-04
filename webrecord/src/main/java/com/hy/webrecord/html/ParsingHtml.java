@@ -7,8 +7,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by lim2621 on 2015-06-01.
@@ -29,7 +33,27 @@ public class ParsingHtml {
      * @return
      */
     public String getHTML(String urlToRead) throws IOException {
-       /* URL url; // The URL to read
+
+        InputStream is = mContext.getAssets().open("test2.html");
+        int size = is.available();
+
+        byte[] buffer = new byte[size];
+        is.read(buffer);
+        is.close();
+
+        String str = new String(buffer);
+
+
+        return str;
+    }
+
+    /**
+     * 인터넷 html 가져오기
+     * @param urlToRead
+     * @return
+     */
+    public String getUrlHTML(String urlToRead) {
+        URL url; // The URL to read
         HttpURLConnection conn; // The actual connection to the web page
         BufferedReader rd; // Used to read results from the web page
         String line; // An individual line of the web page HTML
@@ -45,31 +69,9 @@ public class ParsingHtml {
             rd.close();
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
-        InputStream is = mContext.getAssets().open("test2.html");
-        int size = is.available();
+        }
 
-        byte[] buffer = new byte[size];
-        is.read(buffer);
-        is.close();
-
-        String str = new String(buffer);
-
-
-       /* File file = new File(urlToRead);
-        FileReader fr = new FileReader(file);
-        BufferedReader br = new BufferedReader(fr);
-
-        StringBuffer sb = new StringBuffer();
-        String linewise = br.readLine();
-
-        while(linewise != null) {
-            sb.append(linewise );
-            sb.append("\n");
-            linewise = br.readLine();
-        }*/
-
-        return str;
+        return result;
     }
 
     /**

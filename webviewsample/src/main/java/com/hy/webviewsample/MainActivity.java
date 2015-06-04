@@ -34,7 +34,7 @@ public class MainActivity extends ActionBarActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        mWebView.loadUrl("file:///android_asset/test.html");
+        mWebView.loadUrl("file:///android_asset/test/track.html");
         // WebViewClient 지정
 
 

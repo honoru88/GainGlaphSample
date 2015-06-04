@@ -264,7 +264,7 @@ public class SoundFile {
                 }
             }
 
-            // Get decoded stream from the decoder output buffers.
+            // 디코더 출력 버퍼에서 디코딩 된 스트림을 가져옵니다.
             int outputBufferIndex = codec.dequeueOutputBuffer(info, 100);
             if (outputBufferIndex >= 0 && info.size > 0) {
                 if (decodedSamplesSize < info.size) {
@@ -285,7 +285,7 @@ public class SoundFile {
                         newSize = position + info.size + 5 * (1 << 20);
                     }
                     ByteBuffer newDecodedBytes = null;
-                    // Try to allocate memory. If we are OOM, try to run the garbage collector.
+                    //메모리를 할당하려고합니다. 우리가 OOM을 경우, 가비지 컬렉터를 실행 해보십시오.
                     int retry = 10;
                     while (retry > 0) {
                         try {
@@ -298,8 +298,8 @@ public class SoundFile {
                         }
                     }
                     if (retry == 0) {
-                        // Failed to allocate memory... Stop reading more data and finalize the
-                        // instance with the data decoded so far.
+                        // ... 메모리를 할당 더 많은 데이터를 읽고 중지를 완료 할 수 없습니다
+                        // 지금까지 디코딩 된 데이터 인스턴스입니다.
                         break;
                     }
                     //ByteBuffer newDecodedBytes = ByteBuffer.allocate(newSize);
@@ -313,12 +313,12 @@ public class SoundFile {
             } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_BUFFERS_CHANGED) {
                 outputBuffers = codec.getOutputBuffers();
             } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                // Subsequent data will conform to new format.
-                // We could check that codec.getOutputFormat(), which is the new output format,
-                // is what we expect.
+                // 이후의 데이터는 새로운 형식을 준수합니다.
+                // 우리는 새로운 출력 형식입니다 codec.getOutputFormat ()를 확인할 수 있습니다
+
             }
             if ((info.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
-                // We got all the decoded data from the decoder.
+                // 우리는 디코더의 모든 디코딩 된 데이터를 얻었다.
                 break;
             }
         }
@@ -390,15 +390,15 @@ public class SoundFile {
                 minBufferSize
         );
 
-        // Allocate memory for 20 seconds first. Reallocate later if more is needed.
+        // 처음 20 초 동안 메모리를 할당합니다. 더 필요한 경우 이후의 재 할당.
         mDecodedBytes = ByteBuffer.allocate(20 * mSampleRate * 2);
         mDecodedBytes.order(ByteOrder.LITTLE_ENDIAN);
         mDecodedSamples = mDecodedBytes.asShortBuffer();
         audioRecord.startRecording();
         while (true) {
-            // check if mDecodedSamples can contain 1024 additional samples.
+            // mDecodedSamples 1024 추가 샘플을 포함 할 수 있는지 확인합니다.
             if (mDecodedSamples.remaining() < 1024) {
-                // Try to allocate memory for 10 additional seconds.
+                // 10 초 동안 추가 메모리를 할당하려고합니다.
                 int newCapacity = mDecodedBytes.capacity() + 10 * mSampleRate * 2;
                 ByteBuffer newDecodedBytes = null;
                 try {
