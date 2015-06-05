@@ -1,7 +1,7 @@
 (function () {
 	'use strict';
 
-	// Does the browser actually support the video element?
+	// 브라우저가 실제로 비디오 요소를 지원합니까?
 	var supportsVideo = !!document.createElement('video').canPlayType;
 
 	if (supportsVideo) {
@@ -10,13 +10,13 @@
 		var video = document.getElementById('video');
 		var videoControls = document.getElementById('video-controls');
 
-		// Hide the default controls
+		// 기본 컨트롤을 숨기기
 		video.controls = false;
 
-		// Display the user defined video controls
+		// 사용자 정의 비디오 컨트롤을 표시
 		videoControls.setAttribute('data-state', 'visible');
 
-		// Obtain handles to buttons and other elements
+		// 버튼 및 기타 요소에 대한 핸들을 얻습니다
 		var playpause = document.getElementById('playpause');
 		var stop = document.getElementById('stop');
 		var mute = document.getElementById('mute');
@@ -27,13 +27,13 @@
 		var fullscreen = document.getElementById('fs');
 		var subtitles = document.getElementById('subtitles');
 
-		// If the browser doesn't support the progress element, set its state for some different styling
+		// If the browser doesn't support the progress element, set its state for some different styling 브라우저가 진행 요소를 지원하지 않는다면, 어떤 다른 스타일링 상태를 설정할
 		var supportsProgress = (document.createElement('progress').max !== undefined);
 		if (!supportsProgress) progress.setAttribute('data-state', 'fake');
 
-		// Check if the browser supports the Fullscreen API
+		// 브라우저가 전체 화면 API를 지원하는지 확인
 		var fullScreenEnabled = !!(document.fullscreenEnabled || document.mozFullScreenEnabled || document.msFullscreenEnabled || document.webkitSupportsFullscreen || document.webkitFullscreenEnabled || document.createElement('video').webkitRequestFullScreen);
-		// If the browser doesn't support the Fulscreen API then hide the fullscreen button
+		// 브라우저 Fulscreen API를 지원하지 않는 경우 전체 화면 버튼을 숨기기
 		if (!fullScreenEnabled) {
 			fullscreen.style.display = 'none';
 		}
@@ -49,7 +49,7 @@
 					if (currentVolume > 0) video.volume -= 0.1;
 				}
 				// If the volume has been turned off, also set it as muted
-				// Note: can only do this with the custom control set as when the 'volumechange' event is raised, there is no way to know if it was via a volume or a mute change
+				// Note: 단지 'volumechange'이벤트가 발생할 때로 설정된 사용자 지정 컨트롤로이 작업을 수행 할 수 있습니다, 그것은 볼륨이나 음소거 변화에 의한 것이면 알 수있는 방법이 없습니다
 				if (currentVolume <= 0) video.muted = true;
 				else video.muted = false;
 			}
@@ -87,10 +87,11 @@
 				}
 				else {
 					// ...otherwise enter fullscreen mode
-					// (Note: can be called on document, but here the specific element is used as it will also ensure that the element's children, e.g. the custom controls, go fullscreen also)
+					// (Note: 그것은 또한 예를 들어 요소의 아이들, 보장하므로 문서를 호출 할 수 있지만, 여기에 특정 요소가 사용됩니다사용자 지정 컨트롤은 전체 화면도 이동합니다)
 					if (videoContainer.requestFullscreen) videoContainer.requestFullscreen();
 					else if (videoContainer.mozRequestFullScreen) videoContainer.mozRequestFullScreen();
 					else if (videoContainer.webkitRequestFullScreen) {
+					    //사파리 5.1은 비디오 요소에 적절한 전체 화면을 수 있습니다. 이것은 또한 다시 나타나는 기본 컨트롤을 숨 깁니다 (styles.css가 설정) 다음 CSS와 같은 다른 웹킷 브라우저에서 잘 작동하고 사용자 지정 컨트롤이 표시되는지 확인합니다
 						// Safari 5.1 only allows proper fullscreen on the video element. This also works fine on other WebKit browsers as the following CSS (set in styles.css) hides the default controls that appear again, and
 						// ensures that our custom controls are visible:
 						// figure[data-fullscreen=true] video::-webkit-media-controls { display:none !important; }
@@ -102,14 +103,14 @@
 				}
 			}
 
-		// Only add the events if addEventListener is supported (IE8 and less don't support it, but that will use Flash anyway)
+		// addEventListener를이 지원되는 경우에만 이벤트를 추가 (지원하지 않는 IE8 덜하지만 어쨌든 플래시를 사용합니다)
 		if (document.addEventListener) {
 			// Wait for the video's meta data to be loaded, then set the progress bar's max value to the duration of the video
 			video.addEventListener('loadedmetadata', function() {
 				progress.setAttribute('max', video.duration);
 			});
 
-			// Changes the button state of certain button's so the correct visuals can be displayed with CSS
+			// 특정 버튼의의 버튼 상태를 변경 그래서 올바른 시각은 CSS로 표시 할 수 있습니다
 			var changeButtonState = function(type) {
 				// Play/Pause button
 				if (type == 'playpause') {
@@ -148,7 +149,7 @@
 				video.textTracks[i].mode = 'hidden';
 			}
 
-			// Creates and returns a menu item for the subtitles language menu
+			// 작성해 자막 언어 메뉴의 메뉴 항목을 리턴
 			var subtitleMenuButtons = [];
 			var createMenuItem = function(id, lang, label) {
 				var listItem = document.createElement('li');
@@ -181,7 +182,7 @@
 				subtitleMenuButtons.push(button);
 				return listItem;
 			}
-			// Go through each one and build a small clickable list, and when each item is clicked on, set its mode to be "showing" and the others to be "hidden"
+			// 각 하나를 통해 이동 작은 클릭 가능한 목록을 작성하고, 각 항목에 클릭 할 때에는 "showing"하고 다른 사람들이 "hidden"로 그것의 모드를 설정
 			var subtitlesMenu;
 			if (video.textTracks) {
 				var df = document.createDocumentFragment();
@@ -199,12 +200,12 @@
 				}
 			});
 
-			// The Media API has no 'stop()' function, so pause the video and reset its time and the progress bar
+			// 미디어 API에는 'STOP ()'기능이 없기 때문에 동영상을 일시 정지하고 시간과 진행 표시 줄을 다시 설정
 			stop.addEventListener('click', function(e) {
 				video.pause();
 				video.currentTime = 0;
 				progress.value = 0;
-				// Update the play/pause button's 'data-state' which allows the correct button image to be set via CSS
+				// 올바른 버튼 이미지가 CSS를 통해 설정할 수 있습니다 재생 / 일시 정지 버튼의 '데이터 상태를'업데이트
 				changeButtonState('playpause');
 			});
 			mute.addEventListener('click', function(e) {
@@ -223,7 +224,7 @@
 
 			// As the video is playing, update the progress bar
 			video.addEventListener('timeupdate', function() {
-				// For mobile browsers, ensure that the progress element's max attribute is set
+				// 모바일 브라우저의 경우, 진행 요소의 최대 속성이 설정되어 있는지 확인
 				if (!progress.getAttribute('max')) progress.setAttribute('max', video.duration);
 				progress.value = video.currentTime;
 				progressBar.style.width = Math.floor((video.currentTime / video.duration) * 100) + '%';
@@ -236,7 +237,7 @@
 				video.currentTime = pos * video.duration;
 			});
 
-			// Listen for fullscreen change events (from other controls, e.g. right clicking on the video itself)
+			// (다른 컨트롤, 비디오 자체에 대한 예를 들어, 마우스 오른쪽 버튼을 클릭에서) 전체 화면 변경 이벤트를 수신
 			document.addEventListener('fullscreenchange', function(e) {
 				setFullscreenData(!!(document.fullScreen || document.fullscreenElement));
 			});

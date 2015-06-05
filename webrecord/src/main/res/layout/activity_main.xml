@@ -14,14 +14,12 @@
 
     <com.hy.webrecord.view.WaveformView
         android:id="@+id/wave_form_view"
-        android:background="@color/highlighted_text_material_light"
+        android:background="@color/timecode"
         android:layout_width="fill_parent"
         android:layout_height="250px"
         android:layout_below="@+id/webview"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true">
-
-
     </com.hy.webrecord.view.WaveformView>
 
 

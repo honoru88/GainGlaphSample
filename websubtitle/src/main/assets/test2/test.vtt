@@ -1,63 +1,77 @@
 WEBVTT
 
 0
-00:00:00.000 --> 00:00:12.000
-<v Test>[Test]</v>
-
-NOTE This is a comment and must be preceded by a blank line
+00:00:00.000 --> 00:00:02.000
+<c.red.background-yellow>[aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa]</c>
 
 1
+00:00:02.000 --> 00:00:04.000 line:10 position:46% align:middle size:92% vertical:rl
+<c.red>It has shed much innocent blood.</c>
+
+2
+00:00:04.000 --> 00:00:06.000
+<c.green>It has shed much innocent blood.</c>
+
+3
+00:00:08.000 --> 00:00:10.000
+<b>This blade has a dark past.</b>
+
+4
+00:00:10.700 --> 00:00:16.500
+It has shed much innocent blood.
+
+5
 00:00:18.700 --> 00:00:21.500
 This blade has a dark past.
 
-2
+6
 00:00:22.800 --> 00:00:26.800
 It has shed much innocent blood.
 
-3
+7
 00:00:29.000 --> 00:00:32.450
 You're a fool for traveling alone,
 so completely unprepared.
 
-4
+8
 00:00:32.750 --> 00:00:35.800
 You're lucky your blood's still flowing.
 
-5
+9
 00:00:36.250 --> 00:00:37.300
 Thank you.
 
-6
+10
 00:00:38.500 --> 00:00:40.000
 So...
 
-7
+11
 00:00:40.400 --> 00:00:44.800
 What brings you to
 the land of the gatekeepers?
 
-8
+12
 00:00:46.000 --> 00:00:48.500
 I'm searching for someone.
 
-9
+13
 00:00:49.000 --> 00:00:53.200
 Someone very dear?
 A kindred spirit?
 
-10
+14
 00:00:54.400 --> 00:00:56.000
 A dragon.
 
-11
+15
 00:00:58.850 --> 00:01:01.750
 A dangerous quest for a lone hunter.
 
-12
+16
 00:01:02.950 --> 00:01:05.870
 I've been alone for
 as long as I can remember.
 
-13
+17
 00:01:58.250 --> 00:01:59.500
 We're almost done. Shhh...

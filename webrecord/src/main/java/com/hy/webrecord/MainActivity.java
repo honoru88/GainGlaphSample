@@ -104,7 +104,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main2);
+        setContentView(R.layout.activity_main);
 
         setLayout();
         mHandler = new Handler();
@@ -426,27 +426,6 @@ public class MainActivity extends Activity {
         }
     };
 
-    //핸들러
-    public Handler mActionHandler2 = new Handler() {
-        public void handleMessage(Message msg) {
-            mWaveformView.invalidate();
-         /*   Bundle data = msg.getData();
-*/
-           /* switch(data.getInt(ACTION_KEY_TYPE)) {
-                case ACTION_TYPE_SETTEXT:
-                    String strvalue = data.getString(ACTION_KEY_VALUE);
-                    mTextView.setText(strvalue);
-
-                    break;
-
-                case ACTION_TYPE_SETSCROLL:
-                    int intvalue = data.getInt(ACTION_KEY_VALUE);
-                    mLayout.scrollTo(0, intvalue);
-
-                    break;
-            }*/
-        }
-    };
 
     @JavascriptInterface
     public void record() {
