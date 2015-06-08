@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title>jQM - Slide transition demo with dynamically added pages - jsFiddle demo by Gajotres</title>
+  
+  <script type='text/javascript' src='js/jquery-2.1.4.min.js'></script>
+  
+  <link rel="stylesheet" type="text/css" href="css/normalize.css">
+  
+  
+
+  
+  <style type='text/css'>
+    .ui-footer {
+    height: 30px;
+}
+
+#bubble-holder {
+    margin: 10px auto 0 auto;
+    width: 60px;
+    height: 10px;
+}
+
+#page1-bubble, #page2-bubble, #page3-bubble {
+    position: relative;
+    float: left;
+    margin: 0 5px;
+    width: 10px;
+    height: 10px;
+    background: #3408AE;
+    -webkit-border-radius:  5px;
+    border-radius: 5px;    
+    -moz-box-shadow: inset 0 -1px #eee;    
+    -webkit-box-shadow: inset 0 -1px #eee;    
+    box-shadow: inset 0 -1px #eee;    
+}
+  </style>
+  
+
+
+<script type='text/javascript'>//<![CDATA[ 
+$(function(){
+$(document).on('pagebeforeshow', 'div[data-role="page"]', function(){    
+    selectbubble($(this));
+});
+
+$(document).off('swipeleft').on('swipeleft', 'div[data-role="page"]', function(event){    
+    if(event.handled !== true) // This will prevent event triggering more then once
+    {    
+        var nextpage = $.mobile.activePage.next('div[data-role="page"]');
+        // swipe using id of next page if exists
+        if (nextpage.length > 0) {
+            $.mobile.changePage(nextpage, {transition: "slide", reverse: false}, true, true);
+        }
+        event.handled = true;
+    }
+    return false;         
+});
+
+$(document).off('swiperight').on('swiperight', 'div[data-role="page"]', function(event){   
+    if(event.handled !== true) // This will prevent event triggering more then once
+    {      
+        var prevpage = $(this).prev('div[data-role="page"]');
+        if (prevpage.length > 0) {
+            $.mobile.changePage(prevpage, {transition: "slide", reverse: true}, true, true);
+        }
+        event.handled = true;
+    }
+    return false;            
+});
+
+function selectbubble(page) {
+    $.each($('#bubble-holder div'), function (index,value) {
+        var bubble = $(this);
+        bubble.css('background','#3408AE'); 
+        if(bubble.attr('id') === 'page' + page.attr('data-pagination') + '-bubble'){
+            bubble.css('background','#0B0228');
+        }
+    });    
+}
+
+});//]]>  
+
+</script>
+
+
+</head>
+<body>
+  <!DOCTYPE html>
+<html>
+    <head>
+        <title>Share QR</title>
+        <meta name="viewport" content="width=device-width,height=device-height,minimum-scale=1,maximum-scale=1"/>
+        <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+        <script src="js/jquery.mobile-1.4.5.min.js"></script>
+    </head>
+    
+    <body>
+        <div data-role="page" id="article1" data-pagination="1">
+            <div data-role="header" data-theme="b" data-position="fixed" data-id="footer">
+                <h1>Pages</h1>
+            </div>
+            <div data-role="content">
+                <p>Page 1</p>
+            </div>
+            <div data-role="footer" data-theme="b" data-position="fixed" data-id="footer">
+                <div id="bubble-holder">
+                    <div id="page1-bubble"></div>
+                    <div id="page2-bubble"></div>
+                    <div id="page3-bubble"></div>                    
+                </div>    
+            </div>
+        </div>
+        
+        <div data-role="page" id="article2" data-pagination="2">
+            <div data-role="header" data-theme="b" data-position="fixed" data-id="footer">
+                <a href="#article1" data-icon="home" data-iconpos="notext">Home</a>
+                <h1>Pages</h1>
+            </div>
+            <div data-role="content">
+                <p>Page 2</p>
+            </div>
+            <div data-role="footer" data-theme="b" data-position="fixed" data-id="footer">
+                <div id="bubble-holder">
+                    <div id="page1-bubble"></div>
+                    <div id="page2-bubble"></div>
+                    <div id="page3-bubble"></div>                    
+                </div>   
+            </div>
+        </div>
+        
+        <div data-role="page" id="article3" data-pagination="3">
+            <div data-role="header" data-theme="b" data-position="fixed" data-id="footer">
+                <a href="#article1" data-icon="home" data-iconpos="notext">Home</a>
+                <h1>Pages</h1>
+            </div>
+            <div data-role="content">
+                <p>Page 3</p>
+            </div>
+            <div data-role="footer" data-theme="b" data-position="fixed" data-id="footer">
+                <div id="bubble-holder">
+                    <div id="page1-bubble"></div>
+                    <div id="page2-bubble"></div>
+                    <div id="page3-bubble"></div>                    
+                </div>   
+            </div>
+        </div>
+        
+    </body>
+</html>
+  
+</body>
+
+
+</html>
+

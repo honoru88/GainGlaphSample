@@ -226,8 +226,12 @@
 			video.addEventListener('timeupdate', function() {
 				// 모바일 브라우저의 경우, 진행 요소의 최대 속성이 설정되어 있는지 확인
 				if (!progress.getAttribute('max')) progress.setAttribute('max', video.duration);
-				progress.value = video.currentTime;
+				var p_currentTime=parseInt(video.currentTime);
+				var p_duration=parseInt(video.duration);
+				var p_value=((p_currentTime / p_duration) * 100) ;
+				progress.value = p_value;//이거함보자
 				progressBar.style.width = Math.floor((video.currentTime / video.duration) * 100) + '%';
+
 			});
 
 			// React to the user clicking within the progress bar

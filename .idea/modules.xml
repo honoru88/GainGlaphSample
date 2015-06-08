@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GainGlaphSample.iml" filepath="$PROJECT_DIR$/GainGlaphSample.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/htmlswipesample/htmlswipesample.iml" filepath="$PROJECT_DIR$/htmlswipesample/htmlswipesample.iml" />
+      <module fileurl="file://$PROJECT_DIR$/myapplication/myapplication.iml" filepath="$PROJECT_DIR$/myapplication/myapplication.iml" />
       <module fileurl="file://$PROJECT_DIR$/webrecord/webrecord.iml" filepath="$PROJECT_DIR$/webrecord/webrecord.iml" />
       <module fileurl="file://$PROJECT_DIR$/websubtitle/websubtitle.iml" filepath="$PROJECT_DIR$/websubtitle/websubtitle.iml" />
       <module fileurl="file://$PROJECT_DIR$/webviewsample/webviewsample.iml" filepath="$PROJECT_DIR$/webviewsample/webviewsample.iml" />

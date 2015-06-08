@@ -37,6 +37,8 @@ public class MainActivity extends Activity {
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){
             webview.setWebContentsDebuggingEnabled(true);
         }
+
         webview.loadUrl("file:///android_asset/test2/test.html");
     }
+
 }
