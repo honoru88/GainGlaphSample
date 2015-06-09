@@ -17,6 +17,8 @@
 				// swipe using id of next page if exists
 				if (nextpage.length > 0) {
 					$.mobile.changePage(nextpage, {transition: "slide", reverse: false}, true, true);
+					console.log($.mobile.activePage);
+
 				}
 				event.handled = true;
 			}
@@ -60,24 +62,24 @@
 		
 
 		function recode(str){
-            $("#btn_rec").css("display", "none");
-            $("#btn_stop").css("display", "");
+            $.mobile.activePage.find("#btn_rec").css("display", "none");
+            $.mobile.activePage.find("#btn_stop").css("display", "");
 		    window.Android.recode(str);
 		}
 		
 		function play(str){
-            $("#btn_play").css("display", "none");
-            $("#btn_pause").css("display", "");
+            $.mobile.activePage.find("#btn_play").css("display", "none");
+            $.mobile.activePage.find("#btn_pause").css("display", "");
             window.Android.play(str);
 		}
 		function rStop(){
-            $("#btn_stop").css("display", "none");
-            $("#btn_popup").css("display", "");
+            $.mobile.activePage.find("#btn_stop").css("display", "none");
+            $.mobile.activePage.find("#btn_popup").css("display", "");
             window.Android.rStop();
 		}
 		function pause(){
-            $("#btn_pause").css("display", "none");
-            $("#btn_play").css("display", "");
+            $.mobile.activePage.find("#btn_pause").css("display", "none");
+            $.mobile.activePage.find("#btn_play").css("display", "");
             window.Android.pause();
 		}
 		function popup(str){
