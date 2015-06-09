@@ -17,15 +17,14 @@
 -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="vertical">
 
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:layout_gravity="right"
 
         android:orientation="horizontal">
@@ -36,83 +35,97 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="X" />
+            android:text="X"/>
 
     </LinearLayout>
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
 
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-           android:id="@+id/btn_native_play"
-            android:background="@drawable/btn_play"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="51dp"
-            android:layout_marginStart="51dp"
-            android:layout_alignBaseline="@+id/waveform_native"
-            android:layout_alignBottom="@+id/waveform_native"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
 
-        <com.hy.webrecord.view.WaveformView
+        android:orientation="horizontal"
+        >
+
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:orientation="vertical"
+
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="원어민"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="13dp"
+                />
+
+            <Button
+                android:id="@+id/btn_native_play"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+
+                android:background="@drawable/btn_play"
+                />
+        </LinearLayout>
+
+        <com.hy.htmlswipesample.view.WaveformView
             android:id="@+id/waveform_native"
+            android:layout_width="fill_parent"
+            android:layout_height="130dp"
+            android:layout_gravity="left"
+
+            android:layout_marginRight="15dp"
+            android:background="@color/primary_text_default_material_dark"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:orientation="horizontal"
+        >
+
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:orientation="vertical"
+
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="나"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="13dp"
+                />
+
+            <Button
+                android:id="@+id/btn_me_play"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/btn_play" />
+        </LinearLayout>
+
+        <com.hy.htmlswipesample.view.WaveformView
+            android:id="@+id/waveform_me"
             android:layout_width="wrap_content"
             android:layout_height="130dp"
-            android:background="@color/primary_text_default_material_dark"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/btn_native_play"
-            android:layout_toEndOf="@+id/btn_native_play"
-            android:layout_marginLeft="72dp"
-            android:layout_marginStart="72dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="원어민"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/waveform_native"
-            android:layout_toStartOf="@+id/waveform_native"/>
-    </RelativeLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <Button
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:id="@+id/btn_my_play"
-            android:background="@drawable/btn_play"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="51dp"
-            android:layout_marginStart="51dp"
-            android:layout_alignBaseline="@+id/waveform_my"
-            android:layout_alignBottom="@+id/waveform_my"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"/>
-
-        <com.hy.webrecord.view.WaveformView
-            android:id="@+id/waveform_my"
-            android:layout_width="wrap_content"
-            android:layout_height="130dp"
-            android:background="@color/primary_text_default_material_dark"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/btn_my_play"
-            android:layout_toEndOf="@+id/btn_my_play"
-            android:layout_marginLeft="72dp"
-            android:layout_marginStart="72dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="나"
-            android:layout_alignParentTop="true"
-            android:layout_toLeftOf="@+id/waveform_my"
-            android:layout_toStartOf="@+id/waveform_my"/>
-    </RelativeLayout>
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="15dp"
+            android:background="@color/primary_text_default_material_dark"/>
+    </LinearLayout>
 
 </LinearLayout>

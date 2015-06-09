@@ -59,27 +59,37 @@
 		}
 		
 
-		function recode(){
-		$("#btn_rec").css("display", "none");
-		$("#btn_stop").css("display", "");
+		function recode(str){
+            $("#btn_rec").css("display", "none");
+            $("#btn_stop").css("display", "");
+		    window.Android.recode(str);
 		}
 		
-		function play(){
-		$("#btn_play").css("display", "none");
-		$("#btn_pause").css("display", "");
-		window.Android.play('001');
+		function play(str){
+            $("#btn_play").css("display", "none");
+            $("#btn_pause").css("display", "");
+            window.Android.play(str);
 		}
-		function stop(){
-		$("#btn_stop").css("display", "none");
-		$("#btn_popup").css("display", "");
+		function rStop(){
+            $("#btn_stop").css("display", "none");
+            $("#btn_popup").css("display", "");
+            window.Android.rStop();
 		}
 		function pause(){
-		$("#btn_pause").css("display", "none");
-		$("#btn_play").css("display", "");
+            $("#btn_pause").css("display", "none");
+            $("#btn_play").css("display", "");
+            window.Android.pause();
 		}
-		function popup(){
+		function popup(str){
+		 window.Android.popup(str);
 		
 		}
+
+		function pStop(str){
+		 window.Android.pStop(str);
+
+		}
+
 
 
 
@@ -100,14 +110,15 @@
     <div data-role="content">
         <p>들려주는 문장을 듣고 따라서 녹음해보세요.</p>
         <b>1.Jan has a map and a cup.</b>
-			<div style="text-align: center;text-align=center; margin-top: 20px;margin-bottom: 30px;">
-					<img id="btn_rec" onclick="recode();" src="img/btn_rec.png" style="width: 30%;">
-					<img id="btn_stop" onclick="stop();" src="img/btn_stop.png" style="width: 30%; display: none;">
-					<img id="btn_popup" onclick="popup();" src="img/btn_popup.png" style="width: 30%; display: none;">
-					<img id="btn_play" onclick="play();" src="img/btn_play.png" style="width: 30%;">
-					<img id="btn_pause" onclick="pause();" src="img/btn_pause.png" style="width: 30%; display: none;">
-			</div>
-       
+
+        <div style="text-align: center;text-align=center; margin-top: 20px;margin-bottom: 30px;">
+            <img id="btn_rec" onclick="recode('my_001');" src="img/btn_rec.png" style="width: 30%;">
+            <img id="btn_stop" onclick="rStop();" src="img/btn_stop.png" style="width: 30%; display: none;">
+            <img id="btn_popup" onclick="popup('my_001');" src="img/btn_popup.png" style="width: 30%; display: none;">
+            <img id="btn_play" onclick="play('my_001');" src="img/btn_play.png" style="width: 30%;">
+            <img id="btn_pause" onclick="pause();" src="img/btn_pause.png" style="width: 30%; display: none;">
+        </div>
+
 
         <div id="bubble-holder">
             <div id="page1-bubble"></div>
@@ -132,7 +143,6 @@
     </div>
 
 </article>
-
 <article data-role="page" id="article2" data-pagination="2">
     <div data-role="header" data-theme="b" data-position="fixed" data-id="footer">
         <dl class="dl1">
@@ -144,7 +154,16 @@
     </div>
     <div data-role="content">
         <p>들려주는 문장을 듣고 따라서 녹음해보세요.</p>
-        <b>1.Jan has a map and a cup.</b>
+        <b>2.Jan has a map and a cup.</b>
+
+        <div style="text-align: center;text-align=center; margin-top: 20px;margin-bottom: 30px;">
+            <img id="btn_rec" onclick="recode('my_002');" src="img/btn_rec.png" style="width: 30%;">
+            <img id="btn_stop" onclick="rStop();" src="img/btn_stop.png" style="width: 30%; display: none;">
+            <img id="btn_popup" onclick="popup('my_002');" src="img/btn_popup.png" style="width: 30%; display: none;">
+            <img id="btn_play" onclick="play('my_002');" src="img/btn_play.png" style="width: 30%;">
+            <img id="btn_pause" onclick="pause();" src="img/btn_pause.png" style="width: 30%; display: none;">
+        </div>
+
 
         <div id="bubble-holder">
             <div id="page1-bubble"></div>
@@ -154,6 +173,7 @@
     </div>
     <div data-role="footer" data-theme="b" data-position="fixed" data-id="footer" style="height: 20%;">
         <dl>
+
             <dt>
                 <button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-carat-l" onclick="prevpage();"
                         style="float:left;margin-left: 15px;width:30%;height: 70px;">prev
@@ -165,10 +185,10 @@
                 </button>
             </dt>
         </dl>
-
     </div>
 
 </article>
+
 
 <article data-role="page" id="article3" data-pagination="3">
     <div data-role="header" data-theme="b" data-position="fixed" data-id="footer">

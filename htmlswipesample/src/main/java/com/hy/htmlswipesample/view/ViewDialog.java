@@ -4,13 +4,14 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
-import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hy.htmlswipesample.R;
@@ -18,11 +19,12 @@ import com.hy.htmlswipesample.sound.SamplePlayer;
 import com.hy.htmlswipesample.sound.SoundFile;
 
 import java.io.File;
+import java.io.IOException;
 
 /**
  * Created by lim2621 on 2015-06-09.
  */
-public class ViewDialog extends Dialog implements View.OnClickListener {
+public class ViewDialog extends Dialog implements View.OnClickListener, MediaPlayer.OnCompletionListener {
     private static final String ACTION_KEY_TYPE = "ActionKeyType";
     private static final String ACTION_KEY_VALUE = "ActionKeyValue";
 
@@ -35,7 +37,7 @@ public class ViewDialog extends Dialog implements View.OnClickListener {
 
     private File mFile;
 
-    private String mFilename;
+
     private String mArtist;
     private String mTitle;
     private String mCaption = "";
@@ -69,9 +71,6 @@ public class ViewDialog extends Dialog implements View.OnClickListener {
     private SamplePlayer mPlayer;
 
     private TextView mInfo;
-
-    private WaveformView mWaveformView;
-
     private boolean mIsPlaying;
     private boolean mTouchDragging;
     private boolean mFinishActivity;
@@ -87,16 +86,31 @@ public class ViewDialog extends Dialog implements View.OnClickListener {
     private int mOffset;
     private int mOffsetGoal;
     private int mFlingVelocity;
-    private int mPlayStartMsec;
-    private int mPlayEndMsec;
 
-    private ImageButton mPlayButton;
-    private ImageButton mRewindButton;
 
-    public ViewDialog(Context context) {
+    private WaveformView mWaveFormNavtive;
+    private WaveformView mWaveFormMe;
+
+    private SoundFile mNavtiveSoundFile;
+    private SoundFile mMeSoundFile;
+
+
+    private String mFilename;
+
+    private Button btn_cancle;
+
+    private Button btn_native_play;
+    private Button btn_me_play;
+
+    private MediaPlayer player;
+
+
+    public ViewDialog(Context context, String filename) {
         super(context);
         mContext = context;
         mHandler = new Handler();
+        mFilename = filename;
+
 
     }
 
@@ -105,291 +119,99 @@ public class ViewDialog extends Dialog implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.view_dialog);
 
-        mWaveformView = (WaveformView) findViewById(R.id.waveform_native);
-        //mWaveformView.setListener(this);
-      /*  btn_recrod = (Button) findViewById(R.id.btn_rec);
-        btn_recrod.setOnClickListener(this);
-        btn_play = (Button) findViewById(R.id.btn_play);
-        btn_play.setOnClickListener(this);*/
+        mWaveFormNavtive = (WaveformView) findViewById(R.id.waveform_native);
+        mWaveFormNavtive.setCheck(0);
+        mWaveFormMe = (WaveformView) findViewById(R.id.waveform_me);
+        mWaveFormMe.setCheck(1);
 
-       /* DisplayMetrics metrics = new DisplayMetrics();
-        mContext.getgetDefaultDisplay().getMetrics(metrics);*/
-        DisplayMetrics metrics = new DisplayMetrics();
-        mDensity = metrics.density;
 
-        //recordAudio();
+        btn_cancle = (Button) findViewById(R.id.btn_cancle);
+        btn_native_play = (Button) findViewById(R.id.btn_native_play);
+        btn_me_play = (Button) findViewById(R.id.btn_me_play);
+
+        btn_cancle.setOnClickListener(this);
+        btn_native_play.setOnClickListener(this);
+        btn_me_play.setOnClickListener(this);
+
+
     }
 
-    private void recordAudio() {
-        mFile = null;
-        mTitle = null;
-        mArtist = null;
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        try {
+            AssetManager assetMgr = mContext.getAssets();
 
-        mRecordingLastUpdateTime = getCurrentTime();
-        mRecordingKeepGoing = true;
-        mFinishActivity = false;
-        final SoundFile.ProgressListener listener =
-                new SoundFile.ProgressListener() {
-                    public boolean reportProgress(double elapsedTime) {
+            // mNavtiveSoundFile =  SoundFile.create(Environment.getExternalStorageDirectory()+"/my_001.mp4",getWindow().getDecorView().getWidth());
+            mNavtiveSoundFile = new SoundFile(Environment.getExternalStorageDirectory() + "/" + mFilename + ".mp3", mWaveFormNavtive.getWidth());
+            mMeSoundFile = new SoundFile(Environment.getExternalStorageDirectory() + "/" + mFilename + ".amr", mWaveFormMe.getWidth());
 
-                       /* ExampleAsyncTask aa = new ExampleAsyncTask();
-
-                        aa.execute("a");
-*/
-
-                        return mRecordingKeepGoing;
-                    }
-                };
-
-        // Record the audio stream in a background thread
-        mRecordAudioThread = new Thread() {
-            public void run() {
-                mSoundFile = SoundFile.record(listener, getWindow().getDecorView().getWidth());
-                mPlayer = new SamplePlayer(mSoundFile);
-                finishOpeningSoundFile();
-            }
-        };
-        mRecordAudioThread.start();
-    }
-
-    private void finishOpeningSoundFile() {
-        mWaveformView.setSoundFile(mSoundFile);
-        mWaveformView.recomputeHeights(mDensity);
-
-        mMaxPos = mWaveformView.maxPos();
-        mLastDisplayedStartPos = -1;
-        mLastDisplayedEndPos = -1;
-
-        mTouchDragging = false;
-
-        mOffset = 0;
-        mOffsetGoal = 0;
-        mFlingVelocity = 0;
-        resetPositions();
-        if (mEndPos > mMaxPos)
-            mEndPos = mMaxPos;
-
-       /* mCaption = "체널:" + mSoundFile.getChannels() + "," +
-                "프레임:" + mSoundFile.getFrameGains().length + "," +
-                "샘플프래임:" + mSoundFile.getSamplesPerFrame() + "," +
-                mSoundFile.getFiletype() + ", " +
-                mSoundFile.getSampleRate() + " Hz, " +
-                mSoundFile.getAvgBitrateKbps() + " kbps, " +
-                formatTime(mMaxPos) + " " +
-                mContext.getResources().getString(R.string.time_seconds);*/
-        //  mInfo.setText(mCaption);
-
-        updateDisplay();
-    }
-    /*private void showFinalAlert(Exception e, int messageResourceId) {
-        showFinalAlert(e, mContext.getResources().getText(messageResourceId));
-    }*/
-
-    /**
-     * 현재시간
-     *
-     * @return
-     */
-    private long getCurrentTime() {
-        return System.nanoTime() / 1000000;
-    }
-
-    private synchronized void updateDisplay() {
-        if (mIsPlaying) {
-            int now = mPlayer.getCurrentPosition();
-            int frames = mWaveformView.millisecsToPixels(now);
-            mWaveformView.setPlayback(frames);//재생할때 노란색
-            setOffsetGoalNoUpdate(frames - mWidth / 2);
-            if (now >= mPlayEndMsec) {
-                handlePause();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SoundFile.InvalidInputException e) {
+            e.printStackTrace();
         }
-
-        if (!mTouchDragging) {
-            int offsetDelta;
-
-            if (mFlingVelocity != 0) {
-                offsetDelta = mFlingVelocity / 30;
-                if (mFlingVelocity > 80) {
-                    mFlingVelocity -= 80;
-                } else if (mFlingVelocity < -80) {
-                    mFlingVelocity += 80;
-                } else {
-                    mFlingVelocity = 0;
-                }
-
-                mOffset += offsetDelta;
-
-                if (mOffset + mWidth / 2 > mMaxPos) {
-                    mOffset = mMaxPos - mWidth / 2;
-                    mFlingVelocity = 0;
-                }
-                if (mOffset < 0) {
-                    mOffset = 0;
-                    mFlingVelocity = 0;
-                }
-                mOffsetGoal = mOffset;
-            } else {
-                offsetDelta = mOffsetGoal - mOffset;
-
-                if (offsetDelta > 10)
-                    offsetDelta = offsetDelta / 10;
-                else if (offsetDelta > 0)
-                    offsetDelta = 1;
-                else if (offsetDelta < -10)
-                    offsetDelta = offsetDelta / 10;
-                else if (offsetDelta < 0)
-                    offsetDelta = -1;
-                else
-                    offsetDelta = 0;
-
-                mOffset += offsetDelta;
-            }
-        }
-
-        mWaveformView.setParameters(mStartPos, mEndPos, mOffset);//움직이는 거 반영
-        sendActionMsg(ACTION_TYPE_SETTEXT, "테스트");
-    }
-
-    private void setOffsetGoalNoUpdate(int offset) {
-        if (mTouchDragging) {
-            return;
-        }
-
-        mOffsetGoal = offset;
-        if (mOffsetGoal + mWidth / 2 > mMaxPos)
-            mOffsetGoal = mMaxPos - mWidth / 2;
-        if (mOffsetGoal < 0)
-            mOffsetGoal = 0;
-    }
-
-    /**
-     * 위치초기화
-     */
-    private void resetPositions() {
-        mStartPos = mWaveformView.secondsToPixels(0.0);
-        mEndPos = mWaveformView.secondsToPixels(15.0);
-    }
-
-    /**
-     * 시간
-     *
-     * @param pixels
-     * @return
-     */
-    private String formatTime(int pixels) {
-        if (mWaveformView != null && mWaveformView.isInitialized()) {
-            return formatDecimal(mWaveformView.pixelsToSeconds(pixels));
-        } else {
-            return "";
-        }
-    }
-
-    private String formatDecimal(double x) {
-        int xWhole = (int) x;
-        int xFrac = (int) (100 * (x - xWhole) + 0.5);
-
-        if (xFrac >= 100) {
-            xWhole++; //Round up
-            xFrac -= 100; //Now we need the remainder after the round up
-            if (xFrac < 10) {
-                xFrac *= 10; //we need a fraction that is 2 digits long
-            }
-        }
-
-        if (xFrac < 10)
-            return xWhole + ".0" + xFrac;
-        else
-            return xWhole + "." + xFrac;
-    }
-
-    /**
-     * 일시정지(안씀)
-     */
-    private synchronized void handlePause() {
-        if (mPlayer != null && mPlayer.isPlaying()) {
-            mPlayer.pause();
-        }
-        mWaveformView.setPlayback(-1);
-        mIsPlaying = false;
-        enableDisableButtons();
-    }
-
-    /**
-     * 버튼상태 변경(안씀)
-     */
-    private void enableDisableButtons() {
-        if (mIsPlaying) {
-            mPlayButton.setImageResource(android.R.drawable.ic_media_pause);
-            mPlayButton.setContentDescription(mContext.getResources().getText(R.string.stop));
-        } else {
-            mPlayButton.setImageResource(android.R.drawable.ic_media_play);
-            mPlayButton.setContentDescription(mContext.getResources().getText(R.string.play));
-        }
+        mWaveFormNavtive.setSoundFile(mNavtiveSoundFile);
+        mWaveFormMe.setSoundFile(mMeSoundFile);
+        mWaveFormNavtive.invalidate();
+        mWaveFormMe.invalidate();
     }
 
     @Override
     public void onClick(View v) {
 
         switch (v.getId()) {
-        /*    case R.id.btn_rec:
-                btn_recrod.setSelected(!btn_recrod.isSelected());
-                if (btn_recrod.isSelected()) {
-                    recordAudio();
-                } else {
-                    mRecordingKeepGoing = false;
-                }
+            case R.id.btn_cancle:
+                this.dismiss();
                 break;
-            case R.id.btn_play:
-                mPlayer.start();
-                break;*/
+            case R.id.btn_native_play:
 
+
+                btn_native_play.setSelected(!btn_native_play.isSelected());
+                if (btn_native_play.isSelected()) {
+                    Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/" + mFilename + ".mp3"));
+                    if (player == null) {
+                        player = MediaPlayer.create(mContext, uri);
+                        player.setOnCompletionListener(this);
+                        player.start();
+                        btn_me_play.setClickable(false);
+                    }
+                } else {
+                    player.stop();
+                    player = null;
+                    btn_me_play.setClickable(true);
+                }
+
+                break;
+
+            case R.id.btn_me_play:
+                btn_me_play.setSelected(!btn_me_play.isSelected());
+                if (btn_me_play.isSelected()) {
+                    Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/" + mFilename + ".amr"));
+                    if (player == null) {
+                        player = MediaPlayer.create(mContext, uri);
+                        player.setOnCompletionListener(this);
+                        player.start();
+                        btn_native_play.setClickable(false);
+                    } else {
+                        player.stop();
+                        player = null;
+                        btn_native_play.setClickable(true);
+                    }
+
+                    break;
+                }
         }
     }
 
-    //핸들러 호출 함수
-    private void sendActionMsg(int action, String value) {
-        Message msg = mActionHandler.obtainMessage();
 
-        Bundle bundle = new Bundle();
-        bundle.putInt(ACTION_KEY_TYPE, action);
-        bundle.putString(ACTION_KEY_VALUE, value);
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        mp=null;
+        btn_native_play.setSelected(false);
+        btn_native_play.setClickable(true);
+        btn_me_play.setSelected(false);
+        btn_me_play.setClickable(true);
 
-        msg.setData(bundle);
-        mActionHandler.sendMessage(msg);
+
     }
-
-    private void sendActionMsg(int action, int value) {
-        Message msg = mActionHandler.obtainMessage();
-
-        Bundle bundle = new Bundle();
-        bundle.putInt(ACTION_KEY_TYPE, action);
-        bundle.putInt(ACTION_KEY_VALUE, value);
-
-        msg.setData(bundle);
-        mActionHandler.sendMessage(msg);
-    }
-
-    //핸들러
-    public Handler mActionHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            mWaveformView.invalidate();
-         /*   Bundle data = msg.getData();
-*/
-           /* switch(data.getInt(ACTION_KEY_TYPE)) {
-                case ACTION_TYPE_SETTEXT:
-                    String strvalue = data.getString(ACTION_KEY_VALUE);
-                    mTextView.setText(strvalue);
-
-                    break;
-
-                case ACTION_TYPE_SETSCROLL:
-                    int intvalue = data.getInt(ACTION_KEY_VALUE);
-                    mLayout.scrollTo(0, intvalue);
-
-                    break;
-            }*/
-        }
-    };
-
 }

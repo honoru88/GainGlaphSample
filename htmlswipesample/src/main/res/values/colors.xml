@@ -34,4 +34,7 @@
   <color name="type_bkgnd_music">#88000000</color>
   <color name="type_bkgnd_unsupported">#88cccccc</color>
 
+  <color name="green">#8800ff11</color>
+  <color name="blue">#880053ff</color>
+
 </resources>

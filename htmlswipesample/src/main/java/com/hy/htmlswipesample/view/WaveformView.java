@@ -93,11 +93,13 @@ public class WaveformView extends View {
     private boolean mInitialized;
     private int parentWidth;
     private int parentHeight;
+    private int check =0;//0:네이티브 1:사용자
 
     public WaveformView(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         // We don't want keys, the markers get these
+
         this.setFocusable(false);
 
         mGridPaint = new Paint();
@@ -106,8 +108,7 @@ public class WaveformView extends View {
                 context.getResources().getColor(R.color.grid_line));
         mSelectedLinePaint = new Paint();
         mSelectedLinePaint.setAntiAlias(false);
-        mSelectedLinePaint.setColor(
-                getResources().getColor(R.color.waveform_selected));
+        mSelectedLinePaint.setColor(getResources().getColor(R.color.waveform_selected));
         mUnselectedLinePaint = new Paint();
         mUnselectedLinePaint.setAntiAlias(false);
         mUnselectedLinePaint.setColor(
@@ -369,6 +370,14 @@ public class WaveformView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+        if(check==0) {
+            mSelectedLinePaint.setColor(getResources().getColor(R.color.green));
+        }else if (check==1){
+            mSelectedLinePaint.setColor(getResources().getColor(R.color.blue));
+        }else{
+            mSelectedLinePaint.setColor(getResources().getColor(R.color.waveform_selected));
+        }
         if (mSoundFile == null)
             return;
 
@@ -619,5 +628,9 @@ public class WaveformView extends View {
             mHeightsAtThisZoomLevel[i] =
                     (int) (mValuesByZoomLevel[mZoomLevel][i] * halfHeight);
         }
+    }
+
+    public void setCheck(int check) {
+        this.check = check;
     }
 }

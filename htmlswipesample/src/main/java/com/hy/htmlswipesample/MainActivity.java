@@ -4,12 +4,17 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.AssetManager;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
+import android.view.Window;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -18,23 +23,23 @@ import android.widget.TextView;
 
 import com.hy.htmlswipesample.sound.SamplePlayer;
 import com.hy.htmlswipesample.sound.SoundFile;
+import com.hy.htmlswipesample.view.ViewDialog;
 import com.hy.htmlswipesample.view.WaveformView;
 
-import org.json.JSONException;
-
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 
 public class MainActivity extends Activity {
 
     private WebView mWebView;
 
-    // private RecordSample recordSample;
-
-
-    private static final String ACTION_KEY_TYPE = "ActionKeyType";
-    private static final String ACTION_KEY_VALUE = "ActionKeyValue";
+    final private static String ACTION_KEY_TYPE = "ActionKeyType";
+    final private static String ACTION_KEY_VALUE = "ActionKeyValue";
+    final private static File SD_PATH = Environment.getExternalStorageDirectory();
 
     private static final int ACTION_TYPE_SETTEXT = 0;
     private static final int ACTION_TYPE_SETSCROLL = 1;
@@ -100,27 +105,19 @@ public class MainActivity extends Activity {
     private int mPlayStartMsec;
     private int mPlayEndMsec;
 
+    private MediaRecorder mediaRecorder;
+    private SharedPreferences pref;
+    private MediaPlayer player;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mContext = this;
 
         setLayout();
         mHandler = new Handler();
-
-      /*  // 웹뷰에서 자바스크립트실행가능 1번
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.loadUrl("file:///android_asset/test.html");
-        mWebView.setWebViewClient(new WebViewClientClass());
-
-        mWebView.addJavascriptInterface(new WebViewInterface(this, mWebView), "Android"); // eventDetail : 클라이언트에서 사용할 이름
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            mWebView.setWebContentsDebuggingEnabled(true);
-        }
-*/
-
 
         // 웹뷰에서 자바스크립트실행가능
         mWebView.getSettings().setJavaScriptEnabled(true);
@@ -131,17 +128,18 @@ public class MainActivity extends Activity {
         //mWebView.addJavascriptInterface(new WebViewInterface(), "Android"); // eventDetail : 클라이언트에서 사용할 이름
 
         mWebView.loadUrl("file:///android_asset/test2.html");
-     /*   ParsingHtml parsingHtml = new ParsingHtml(this);
-
-        try {
-            mWebView.loadDataWithBaseURL("", parsingHtml.test("file:///android_asset/test2.html"), "text/html", "UTF-8", "");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mWebView.setWebContentsDebuggingEnabled(true);
+        }
+
+
+        pref = getSharedPreferences("pref", MODE_PRIVATE);
+        if (!pref.getBoolean("isFirst", false)) {
+
+            CopyAssets();
+            SharedPreferences.Editor edit = pref.edit();
+            edit.putBoolean("isFirst", true);
+            edit.commit();
         }
 
     }
@@ -160,42 +158,9 @@ public class MainActivity extends Activity {
      */
     private void setLayout() {
         mWebView = (WebView) findViewById(R.id.webview);
-        //mWaveformView = (WaveformView) findViewById(R.id.wave_form_view);
-        //recordSample = (RecordSample) findViewById(R.id.waveform_view);
 
     }
 
-    public void recordAudio() {
-        mFile = null;
-        mTitle = null;
-        mArtist = null;
-
-        mRecordingLastUpdateTime = getCurrentTime();
-        mRecordingKeepGoing = true;
-        mFinishActivity = false;
-        final SoundFile.ProgressListener listener =
-                new SoundFile.ProgressListener() {
-                    public boolean reportProgress(double elapsedTime) {
-
-                       /* ExampleAsyncTask aa = new ExampleAsyncTask();
-
-                        aa.execute("a");
-*/
-
-                        return mRecordingKeepGoing;
-                    }
-                };
-
-        // Record the audio stream in a background thread
-        mRecordAudioThread = new Thread() {
-            public void run() {
-                mSoundFile = SoundFile.record(listener, mWaveformView.getWidth());
-                mPlayer = new SamplePlayer(mSoundFile);
-                finishOpeningSoundFile();
-            }
-        };
-        mRecordAudioThread.start();
-    }
 
     private void finishOpeningSoundFile() {
         mWaveformView.setSoundFile(mSoundFile);
@@ -210,259 +175,155 @@ public class MainActivity extends Activity {
         mOffset = 0;
         mOffsetGoal = 0;
         mFlingVelocity = 0;
-        resetPositions();
         if (mEndPos > mMaxPos)
             mEndPos = mMaxPos;
 
-       /* mCaption = "체널:" + mSoundFile.getChannels() + "," +
-                "프레임:" + mSoundFile.getFrameGains().length + "," +
-                "샘플프래임:" + mSoundFile.getSamplesPerFrame() + "," +
-                mSoundFile.getFiletype() + ", " +
-                mSoundFile.getSampleRate() + " Hz, " +
-                mSoundFile.getAvgBitrateKbps() + " kbps, " +
-                formatTime(mMaxPos) + " " +
-                mContext.getResources().getString(R.string.time_seconds);*/
-        //  mInfo.setText(mCaption);
 
-        updateDisplay();
-    }
-    /*private void showFinalAlert(Exception e, int messageResourceId) {
-        showFinalAlert(e, mContext.getResources().getText(messageResourceId));
-    }*/
-
-    /**
-     * 현재시간
-     *
-     * @return
-     */
-    private long getCurrentTime() {
-        return System.nanoTime() / 1000000;
     }
 
-    private synchronized void updateDisplay() {
-        if (mIsPlaying) {
-            int now = mPlayer.getCurrentPosition();
-            int frames = mWaveformView.millisecsToPixels(now);
-            mWaveformView.setPlayback(frames);//재생할때 노란색
-            setOffsetGoalNoUpdate(frames - mWidth / 2);
-            if (now >= mPlayEndMsec) {
-                handlePause();
-            }
+    @JavascriptInterface
+    public void recode(String str) {
+        Log.i("메롱", "녹음" + SD_PATH.getAbsolutePath());
+
+        mediaRecorder = new MediaRecorder();
+        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.RAW_AMR);
+        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+        mediaRecorder.setOutputFile(SD_PATH.getAbsolutePath() + "/" + str + ".amr");
+
+        try {
+            mediaRecorder.prepare();
+            mediaRecorder.start();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
-        if (!mTouchDragging) {
-            int offsetDelta;
 
-            if (mFlingVelocity != 0) {
-                offsetDelta = mFlingVelocity / 30;
-                if (mFlingVelocity > 80) {
-                    mFlingVelocity -= 80;
-                } else if (mFlingVelocity < -80) {
-                    mFlingVelocity += 80;
-                } else {
-                    mFlingVelocity = 0;
-                }
-
-                mOffset += offsetDelta;
-
-                if (mOffset + mWidth / 2 > mMaxPos) {
-                    mOffset = mMaxPos - mWidth / 2;
-                    mFlingVelocity = 0;
-                }
-                if (mOffset < 0) {
-                    mOffset = 0;
-                    mFlingVelocity = 0;
-                }
-                mOffsetGoal = mOffset;
-            } else {
-                offsetDelta = mOffsetGoal - mOffset;
-
-                if (offsetDelta > 10)
-                    offsetDelta = offsetDelta / 10;
-                else if (offsetDelta > 0)
-                    offsetDelta = 1;
-                else if (offsetDelta < -10)
-                    offsetDelta = offsetDelta / 10;
-                else if (offsetDelta < 0)
-                    offsetDelta = -1;
-                else
-                    offsetDelta = 0;
-
-                mOffset += offsetDelta;
-            }
-        }
-
-        mWaveformView.setParameters(mStartPos, mEndPos, mOffset);//움직이는 거 반영
-        sendActionMsg(ACTION_TYPE_SETTEXT, "테스트");
     }
 
-    private void setOffsetGoalNoUpdate(int offset) {
-        if (mTouchDragging) {
+    @JavascriptInterface
+    public void rStop() {
+
+        if (mediaRecorder == null)
             return;
-        }
 
-        mOffsetGoal = offset;
-        if (mOffsetGoal + mWidth / 2 > mMaxPos)
-            mOffsetGoal = mMaxPos - mWidth / 2;
-        if (mOffsetGoal < 0)
-            mOffsetGoal = 0;
-    }
-
-    /**
-     * 위치초기화
-     */
-    private void resetPositions() {
-        mStartPos = mWaveformView.secondsToPixels(0.0);
-        mEndPos = mWaveformView.secondsToPixels(15.0);
-    }
-
-    /**
-     * 시간
-     *
-     * @param pixels
-     * @return
-     */
-    private String formatTime(int pixels) {
-        if (mWaveformView != null && mWaveformView.isInitialized()) {
-            return formatDecimal(mWaveformView.pixelsToSeconds(pixels));
-        } else {
-            return "";
-        }
-    }
-
-    private String formatDecimal(double x) {
-        int xWhole = (int) x;
-        int xFrac = (int) (100 * (x - xWhole) + 0.5);
-
-        if (xFrac >= 100) {
-            xWhole++; //Round up
-            xFrac -= 100; //Now we need the remainder after the round up
-            if (xFrac < 10) {
-                xFrac *= 10; //we need a fraction that is 2 digits long
-            }
-        }
-
-        if (xFrac < 10)
-            return xWhole + ".0" + xFrac;
-        else
-            return xWhole + "." + xFrac;
-    }
-
-    /**
-     * 일시정지(안씀)
-     */
-    private synchronized void handlePause() {
-        if (mPlayer != null && mPlayer.isPlaying()) {
-            mPlayer.pause();
-        }
-        mWaveformView.setPlayback(-1);
-        mIsPlaying = false;
-        //enableDisableButtons();
-    }
-
-
-
-   /* @Override
-    public void onClick(View v) {
-
-        switch (v.getId()) {
-            case R.id.btn_rec:
-                btn_recrod.setSelected(!btn_recrod.isSelected());
-                if (btn_recrod.isSelected()) {
-                    recordAudio();
-                } else {
-                    mRecordingKeepGoing = false;
-                }
-                break;
-            case R.id.btn_play:
-                mPlayer.start();
-                break;
-
-        }
-    }*/
-
-    //핸들러 호출 함수
-    private void sendActionMsg(int action, String value) {
-        Message msg = mActionHandler.obtainMessage();
-
-        Bundle bundle = new Bundle();
-        bundle.putInt(ACTION_KEY_TYPE, action);
-        bundle.putString(ACTION_KEY_VALUE, value);
-
-        msg.setData(bundle);
-        mActionHandler.sendMessage(msg);
-    }
-
-    private void sendActionMsg(int action, int value) {
-        Message msg = mActionHandler.obtainMessage();
-
-        Bundle bundle = new Bundle();
-        bundle.putInt(ACTION_KEY_TYPE, action);
-        bundle.putInt(ACTION_KEY_VALUE, value);
-
-        msg.setData(bundle);
-        mActionHandler.sendMessage(msg);
-    }
-
-    //핸들러
-    public Handler mActionHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            mWaveformView.invalidate();
-         /*   Bundle data = msg.getData();
-*/
-           /* switch(data.getInt(ACTION_KEY_TYPE)) {
-                case ACTION_TYPE_SETTEXT:
-                    String strvalue = data.getString(ACTION_KEY_VALUE);
-                    mTextView.setText(strvalue);
-
-                    break;
-
-                case ACTION_TYPE_SETSCROLL:
-                    int intvalue = data.getInt(ACTION_KEY_VALUE);
-                    mLayout.scrollTo(0, intvalue);
-
-                    break;
-            }*/
-        }
-    };
-
-
-    @JavascriptInterface
-    public void record() {
-        Log.i("녹음", "녹음");
-        runOnUiThread(new Runnable() {
-
-            public void run() {
-                recordAudio();
-
-            }
-        });
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        mediaRecorder = null;
+        Log.i("메롱", "멈춤");
 
     }
 
     @JavascriptInterface
-    public void stop() {
-        runOnUiThread(new Runnable() {
+    public void pStop() {
 
-            public void run() {
-                mRecordingKeepGoing = false;
-            }
-        });
+        if (mediaRecorder == null)
+            return;
+
+        mediaRecorder.stop();
+        mediaRecorder.release();
+        mediaRecorder = null;
+        Log.i("메롱", "멈춤");
 
     }
+
 
     @JavascriptInterface
     public void play(String str) {
-        Log.i("녹음", "녹음");
-        if("001".equals(str)){
+        Log.i("메롱", "플레이");
+        if ("my_001".equals(str)) {
 
-            MediaPlayer player = MediaPlayer.create(MainActivity.this, R.raw.t_001);
+            Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/" + str + ".mp3"));
+            if(player==null)
+            player = MediaPlayer.create(MainActivity.this, uri);
             player.start();
-            mWebView.loadUrl("javascript:pause()");
+            //mWebView.loadUrl("javascript:pStop()");
 
         }
 
     }
 
+    @JavascriptInterface
+    public void popup(String str) {
+        Log.i("메롱", "팝업");
+        ViewDialog dialog = new ViewDialog(mContext, str);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        //dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dialog.show();
 
+    }
+    @JavascriptInterface
+    public void pause() {
+        Log.i("메롱", "팝업");
+        if(player!=null){
+            player.pause();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    /*private File makeFile(File dir, String file_path) {
+        File file = null;
+        boolean isSuccess = false;
+        if (dir.isDirectory()) {
+            file = new File(file_path);
+            if (file != null && !file.exists()) {
+                Log.i("메롱", "!file.exists");
+                try {
+                    isSuccess = file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    Log.i("메롱", "파일생성 여부 = " + isSuccess);
+                }
+            } else {
+                Log.i("메롱", "file.exists");
+            }
+        }
+        return file;
+    }*/
+
+
+    private void CopyAssets() {
+        AssetManager assetManager = getAssets();
+        String[] files = null;
+        try {
+            files = assetManager.list("mp3");
+
+            //이미지만 가져올때 files = assetManager.list("image");
+
+        } catch (IOException e) {
+            Log.e("tag", e.getMessage());
+        }
+        for (int i = 0; i < files.length; i++) {
+            InputStream in = null;
+            OutputStream out = null;
+            try {
+                in = assetManager.open("mp3/" + files[i]);
+
+                out = new FileOutputStream(Environment.getExternalStorageDirectory() + "/" + files[i]);
+                copyFile(in, out);
+                in.close();
+                in = null;
+                out.flush();
+                out.close();
+                out = null;
+            } catch (Exception e) {
+                Log.e("tag", e.getMessage());
+            }
+        }
+    }
+
+    private void copyFile(InputStream in, OutputStream out) throws IOException {
+        byte[] buffer = new byte[1024];
+        int read;
+        while ((read = in.read(buffer)) != -1) {
+            out.write(buffer, 0, read);
+        }
+
+    }
 }
