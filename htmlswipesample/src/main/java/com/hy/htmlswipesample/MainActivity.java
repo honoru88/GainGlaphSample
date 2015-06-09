@@ -231,15 +231,13 @@ public class MainActivity extends Activity {
     @JavascriptInterface
     public void play(String str) {
         Log.i("메롱", "플레이");
-        if ("my_001".equals(str)) {
 
             Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/" + str + ".mp3"));
             if(player==null)
-            player = MediaPlayer.create(MainActivity.this, uri);
+                player = MediaPlayer.create(MainActivity.this, uri);
             player.start();
             //mWebView.loadUrl("javascript:pStop()");
 
-        }
 
     }
 
@@ -259,6 +257,9 @@ public class MainActivity extends Activity {
             player.pause();
         }
     }
+
+
+
 
     @Override
     public void onBackPressed() {
