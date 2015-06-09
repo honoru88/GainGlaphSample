@@ -1,4 +1,3 @@
-/*
 package com.hy.htmlswipesample.view;
 
 import android.app.AlertDialog;
@@ -15,17 +14,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.hy.htmlswipesample.R;
+import com.hy.htmlswipesample.sound.SamplePlayer;
+import com.hy.htmlswipesample.sound.SoundFile;
 
 import java.io.File;
 
-*/
 /**
- * Created by lim2621 on 2015-05-29.
- *//*
-
-
-
-public class RecordDialog extends Dialog implements View.OnClickListener {
+ * Created by lim2621 on 2015-06-09.
+ */
+public class ViewDialog extends Dialog implements View.OnClickListener {
     private static final String ACTION_KEY_TYPE = "ActionKeyType";
     private static final String ACTION_KEY_VALUE = "ActionKeyValue";
 
@@ -96,7 +93,7 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     private ImageButton mPlayButton;
     private ImageButton mRewindButton;
 
-    public RecordDialog(Context context) {
+    public ViewDialog(Context context) {
         super(context);
         mContext = context;
         mHandler = new Handler();
@@ -106,19 +103,17 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.record_audio);
+        setContentView(R.layout.view_dialog);
 
-        mWaveformView = (WaveformView) findViewById(R.id.waveform);
+        mWaveformView = (WaveformView) findViewById(R.id.waveform_native);
         //mWaveformView.setListener(this);
-        btn_recrod = (Button) findViewById(R.id.btn_rec);
+      /*  btn_recrod = (Button) findViewById(R.id.btn_rec);
         btn_recrod.setOnClickListener(this);
         btn_play = (Button) findViewById(R.id.btn_play);
-        btn_play.setOnClickListener(this);
+        btn_play.setOnClickListener(this);*/
 
-       */
-/* DisplayMetrics metrics = new DisplayMetrics();
-        mContext.getgetDefaultDisplay().getMetrics(metrics);*//*
-
+       /* DisplayMetrics metrics = new DisplayMetrics();
+        mContext.getgetDefaultDisplay().getMetrics(metrics);*/
         DisplayMetrics metrics = new DisplayMetrics();
         mDensity = metrics.density;
 
@@ -137,12 +132,10 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
                 new SoundFile.ProgressListener() {
                     public boolean reportProgress(double elapsedTime) {
 
-                       */
-/* ExampleAsyncTask aa = new ExampleAsyncTask();
+                       /* ExampleAsyncTask aa = new ExampleAsyncTask();
 
                         aa.execute("a");
-*//*
-
+*/
 
                         return mRecordingKeepGoing;
                     }
@@ -176,33 +169,27 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
         if (mEndPos > mMaxPos)
             mEndPos = mMaxPos;
 
-       */
-/* mCaption = "체널:" + mSoundFile.getChannels() + "," +
+       /* mCaption = "체널:" + mSoundFile.getChannels() + "," +
                 "프레임:" + mSoundFile.getFrameGains().length + "," +
                 "샘플프래임:" + mSoundFile.getSamplesPerFrame() + "," +
                 mSoundFile.getFiletype() + ", " +
                 mSoundFile.getSampleRate() + " Hz, " +
                 mSoundFile.getAvgBitrateKbps() + " kbps, " +
                 formatTime(mMaxPos) + " " +
-                mContext.getResources().getString(R.string.time_seconds);*//*
-
+                mContext.getResources().getString(R.string.time_seconds);*/
         //  mInfo.setText(mCaption);
 
         updateDisplay();
     }
-    */
-/*private void showFinalAlert(Exception e, int messageResourceId) {
+    /*private void showFinalAlert(Exception e, int messageResourceId) {
         showFinalAlert(e, mContext.getResources().getText(messageResourceId));
-    }*//*
+    }*/
 
-
-    */
-/**
+    /**
      * 현재시간
      *
      * @return
-     *//*
-
+     */
     private long getCurrentTime() {
         return System.nanoTime() / 1000000;
     }
@@ -276,24 +263,20 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
             mOffsetGoal = 0;
     }
 
-    */
-/**
+    /**
      * 위치초기화
-     *//*
-
+     */
     private void resetPositions() {
         mStartPos = mWaveformView.secondsToPixels(0.0);
         mEndPos = mWaveformView.secondsToPixels(15.0);
     }
 
-    */
-/**
+    /**
      * 시간
      *
      * @param pixels
      * @return
-     *//*
-
+     */
     private String formatTime(int pixels) {
         if (mWaveformView != null && mWaveformView.isInitialized()) {
             return formatDecimal(mWaveformView.pixelsToSeconds(pixels));
@@ -320,11 +303,9 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
             return xWhole + "." + xFrac;
     }
 
-    */
-/**
+    /**
      * 일시정지(안씀)
-     *//*
-
+     */
     private synchronized void handlePause() {
         if (mPlayer != null && mPlayer.isPlaying()) {
             mPlayer.pause();
@@ -334,11 +315,9 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
         enableDisableButtons();
     }
 
-    */
-/**
+    /**
      * 버튼상태 변경(안씀)
-     *//*
-
+     */
     private void enableDisableButtons() {
         if (mIsPlaying) {
             mPlayButton.setImageResource(android.R.drawable.ic_media_pause);
@@ -353,7 +332,7 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
 
         switch (v.getId()) {
-            case R.id.btn_rec:
+        /*    case R.id.btn_rec:
                 btn_recrod.setSelected(!btn_recrod.isSelected());
                 if (btn_recrod.isSelected()) {
                     recordAudio();
@@ -363,7 +342,7 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
                 break;
             case R.id.btn_play:
                 mPlayer.start();
-                break;
+                break;*/
 
         }
     }
@@ -395,12 +374,9 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
     public Handler mActionHandler = new Handler() {
         public void handleMessage(Message msg) {
             mWaveformView.invalidate();
-         */
-/*   Bundle data = msg.getData();
-*//*
-
-           */
-/* switch(data.getInt(ACTION_KEY_TYPE)) {
+         /*   Bundle data = msg.getData();
+*/
+           /* switch(data.getInt(ACTION_KEY_TYPE)) {
                 case ACTION_TYPE_SETTEXT:
                     String strvalue = data.getString(ACTION_KEY_VALUE);
                     mTextView.setText(strvalue);
@@ -412,10 +388,8 @@ public class RecordDialog extends Dialog implements View.OnClickListener {
                     mLayout.scrollTo(0, intvalue);
 
                     break;
-            }*//*
-
+            }*/
         }
     };
 
 }
-*/

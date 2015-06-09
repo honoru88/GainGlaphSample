@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -447,6 +448,19 @@ public class MainActivity extends Activity {
                 mRecordingKeepGoing = false;
             }
         });
+
+    }
+
+    @JavascriptInterface
+    public void play(String str) {
+        Log.i("녹음", "녹음");
+        if("001".equals(str)){
+
+            MediaPlayer player = MediaPlayer.create(MainActivity.this, R.raw.t_001);
+            player.start();
+            mWebView.loadUrl("javascript:pause()");
+
+        }
 
     }
 
