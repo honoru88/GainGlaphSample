@@ -89,6 +89,53 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+
+        android:orientation="horizontal"
+        >
+
+
+        <LinearLayout
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center"
+            android:orientation="vertical"
+
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="원어민(테스트)"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textSize="9dp"
+                />
+
+            <Button
+                android:id="@+id/btn_test_play"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+
+                android:background="@drawable/btn_play"
+                />
+        </LinearLayout>
+
+        <com.hy.htmlswipesample.view.WaveformView2
+            android:id="@+id/waveform_test"
+            android:layout_width="fill_parent"
+            android:layout_height="130dp"
+            android:layout_gravity="left"
+
+            android:layout_marginRight="15dp"
+            android:background="@color/primary_text_default_material_dark"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:orientation="horizontal"
         >
@@ -116,7 +163,7 @@
                 android:id="@+id/btn_me_play"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:background="@drawable/btn_play" />
+                android:background="@drawable/btn_play"/>
         </LinearLayout>
 
         <com.hy.htmlswipesample.view.WaveformView

@@ -28,7 +28,7 @@ import android.view.ScaleGestureDetector;
 import android.view.View;
 
 import com.hy.htmlswipesample.R;
-import com.hy.htmlswipesample.sound.SoundFile;
+import com.hy.htmlswipesample.sound.SoundFile2;
 
 
 /**
@@ -44,7 +44,7 @@ import com.hy.htmlswipesample.sound.SoundFile;
  * WaveformView doesn't actually handle selection, but it will just display
  * the selected part of the waveform in a different color.
  */
-public class WaveformView extends View {
+public class WaveformView2 extends View {
     public interface WaveformListener {
         public void waveformTouchStart(float x);
 
@@ -72,7 +72,7 @@ public class WaveformView extends View {
     private Paint mPlaybackLinePaint;
     private Paint mTimecodePaint;
 
-    private SoundFile mSoundFile;
+    private SoundFile2 mSoundFile;
     private int[] mLenByZoomLevel;
     private double[][] mValuesByZoomLevel;
     private double[] mZoomFactorByZoomLevel;
@@ -93,9 +93,9 @@ public class WaveformView extends View {
     private boolean mInitialized;
     private int parentWidth;
     private int parentHeight;
-    private int check =0;//0:네이티브 1:사용자
+    private int check = 0;//0:네이티브 1:사용자
 
-    public WaveformView(Context context, AttributeSet attrs) {
+    public WaveformView2(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         // We don't want keys, the markers get these
@@ -234,7 +234,7 @@ public class WaveformView extends View {
         return mSoundFile != null;
     }
 
-    public void setSoundFile(SoundFile soundFile) {
+    public void setSoundFile(SoundFile2 soundFile) {
         mSoundFile = soundFile;
         mSampleRate = mSoundFile.getSampleRate();
         mSamplesPerFrame = mSoundFile.getSamplesPerFrame();
@@ -371,11 +371,11 @@ public class WaveformView extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(check==0) {
+        if (check == 0) {
             mSelectedLinePaint.setColor(getResources().getColor(R.color.green));
-        }else if (check==1){
+        } else if (check == 1) {
             mSelectedLinePaint.setColor(getResources().getColor(R.color.blue));
-        }else{
+        } else {
             mSelectedLinePaint.setColor(getResources().getColor(R.color.pink));
         }
         if (mSoundFile == null)

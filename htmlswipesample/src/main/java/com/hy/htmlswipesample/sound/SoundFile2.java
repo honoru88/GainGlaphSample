@@ -15,7 +15,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.ShortBuffer;
 
-public class SoundFile {
+public class SoundFile2 {
     private File mInputFile = null;
 
     // Member variables representing frame data
@@ -38,7 +38,7 @@ public class SoundFile {
     private String[] checkList = {"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg"};
 
 
-    public SoundFile(String path, int width) throws IOException, InvalidInputException {
+    public SoundFile2(String path, int width) throws IOException, InvalidInputException {
         mNumFrames = width;
 
         File f = new File(path);
@@ -78,7 +78,7 @@ public class SoundFile {
     }
 
     public static void setmNumFrames(int mNumFrames) {
-        SoundFile.mNumFrames = mNumFrames;
+        SoundFile2.mNumFrames = mNumFrames;
     }
 
     public static int getmNumFrames() {
@@ -289,13 +289,7 @@ public class SoundFile {
                 ((float) getSamplesPerFrame() / mSampleRate));
         int sampleValue = (int) (mNumSamples / mNumFrames); // (전체/넓이)
         for (i = 0; i < mNumFrames; i++) {
-            gain = -1;
-            for (j = 0; j < sampleValue; j++) {
-                value = Math.abs(mDecodedSamples.get());
-                if (gain < value) {
-                    gain = value;
-                }
-            }
+            gain = mDecodedSamples.get(i*sampleValue);
             mFrameGains[i] = (int) Math.sqrt(gain);  // here gain = sqrt(max value of 1st channel)...
             mFrameLens[i] = frameLens;  // totally not accurate...
             mFrameOffsets[i] = (int) (i * (1000 * mAvgBitRate / 8) *  //  = i * frameLens

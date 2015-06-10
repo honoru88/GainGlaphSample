@@ -17,6 +17,7 @@ import android.widget.TextView;
 import com.hy.htmlswipesample.R;
 import com.hy.htmlswipesample.sound.SamplePlayer;
 import com.hy.htmlswipesample.sound.SoundFile;
+import com.hy.htmlswipesample.sound.SoundFile2;
 
 import java.io.File;
 import java.io.IOException;
@@ -90,9 +91,11 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
 
     private WaveformView mWaveFormNavtive;
     private WaveformView mWaveFormMe;
+    private WaveformView2 mWaveFormTest;
 
     private SoundFile mNavtiveSoundFile;
     private SoundFile mMeSoundFile;
+    private SoundFile2 mTestSoundFile;
 
 
     private String mFilename;
@@ -121,6 +124,8 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
         mWaveFormNavtive.setCheck(0);
         mWaveFormMe = (WaveformView) findViewById(R.id.waveform_me);
         mWaveFormMe.setCheck(1);
+        mWaveFormTest = (WaveformView2) findViewById(R.id.waveform_test);
+        mWaveFormTest.setCheck(2);
 
         btn_cancle = (Button) findViewById(R.id.btn_cancle);
         btn_native_play = (Button) findViewById(R.id.btn_native_play);
@@ -137,16 +142,22 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
             AssetManager assetMgr = mContext.getAssets();
             mNavtiveSoundFile = new SoundFile(Environment.getExternalStorageDirectory() + "/" + mFilename + ".mp3", mWaveFormNavtive.getWidth());
             mMeSoundFile = new SoundFile(Environment.getExternalStorageDirectory() + "/" + mFilename + ".amr", mWaveFormMe.getWidth());
+            mTestSoundFile = new SoundFile2(Environment.getExternalStorageDirectory() + "/" + mFilename + ".mp3", mWaveFormTest.getWidth());
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SoundFile.InvalidInputException e) {
             e.printStackTrace();
+        } catch (SoundFile2.InvalidInputException e) {
+            e.printStackTrace();
         }
         mWaveFormNavtive.setSoundFile(mNavtiveSoundFile);
         mWaveFormMe.setSoundFile(mMeSoundFile);
+        mWaveFormTest.setSoundFile(mTestSoundFile);
+
         mWaveFormNavtive.invalidate();
         mWaveFormMe.invalidate();
+        mWaveFormTest.invalidate();
     }
 
     @Override
