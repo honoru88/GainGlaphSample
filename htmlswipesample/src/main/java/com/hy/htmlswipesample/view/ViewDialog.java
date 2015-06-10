@@ -110,8 +110,6 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
         mContext = context;
         mHandler = new Handler();
         mFilename = filename;
-
-
     }
 
     @Override
@@ -124,7 +122,6 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
         mWaveFormMe = (WaveformView) findViewById(R.id.waveform_me);
         mWaveFormMe.setCheck(1);
 
-
         btn_cancle = (Button) findViewById(R.id.btn_cancle);
         btn_native_play = (Button) findViewById(R.id.btn_native_play);
         btn_me_play = (Button) findViewById(R.id.btn_me_play);
@@ -132,16 +129,12 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
         btn_cancle.setOnClickListener(this);
         btn_native_play.setOnClickListener(this);
         btn_me_play.setOnClickListener(this);
-
-
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         try {
             AssetManager assetMgr = mContext.getAssets();
-
-            // mNavtiveSoundFile =  SoundFile.create(Environment.getExternalStorageDirectory()+"/my_001.mp4",getWindow().getDecorView().getWidth());
             mNavtiveSoundFile = new SoundFile(Environment.getExternalStorageDirectory() + "/" + mFilename + ".mp3", mWaveFormNavtive.getWidth());
             mMeSoundFile = new SoundFile(Environment.getExternalStorageDirectory() + "/" + mFilename + ".amr", mWaveFormMe.getWidth());
 
@@ -161,6 +154,13 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
 
         switch (v.getId()) {
             case R.id.btn_cancle:
+
+                if (player != null) {
+                    if (player.isPlaying()) {
+                        player.stop();
+                    }
+                    player = null;
+                }
                 this.dismiss();
                 break;
             case R.id.btn_native_play:
@@ -203,15 +203,12 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
         }
     }
 
-
     @Override
     public void onCompletion(MediaPlayer mp) {
-        mp=null;
+        player = null;
         btn_native_play.setSelected(false);
         btn_native_play.setClickable(true);
         btn_me_play.setSelected(false);
         btn_me_play.setClickable(true);
-
-
     }
 }

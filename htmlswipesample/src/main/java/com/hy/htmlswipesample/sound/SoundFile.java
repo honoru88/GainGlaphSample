@@ -33,6 +33,7 @@ public class SoundFile {
     private int[] mFrameGains;
     private int[] mFrameLens;
     private int[] mFrameOffsets;
+    private int test=0;
 
     private String[] checkList = {"mp3", "wav", "3gpp", "3gp", "amr", "aac", "m4a", "ogg"};
 
@@ -183,8 +184,11 @@ public class SoundFile {
         // 버퍼의 크기를 조정하기 위하여 모든 샘플들을 저장하는 데 필요한 전체 크기의 추정치
         // 한 번만.
         mDecodedBytes = ByteBuffer.allocate(1 << 20);
+
         while (true) {
             // read data from file and feed it to the decoder input buffers.
+            i=i++;
+            Log.i("test","test1"+i);
             int inputBufferIndex = codec.dequeueInputBuffer(100);
             if (!done_reading && inputBufferIndex >= 0) {
                 sample_size = extractor.readSampleData(inputBuffers[inputBufferIndex], 0);
@@ -198,18 +202,6 @@ public class SoundFile {
                     codec.queueInputBuffer(inputBufferIndex, 0, sample_size, presentation_time, 0);
                     extractor.advance();
                     tot_size_read += sample_size;
-                  /*  if (mProgressListener != null) {
-                        if (!mProgressListener.reportProgress((float) (tot_size_read) / mFileSize)) {
-                            // We are asked to stop reading the file. Returning immediately. The
-                            // SoundFile object is invalid and should NOT be used afterward!
-                            extractor.release();
-                            extractor = null;
-                            codec.stop();
-                            codec.release();
-                            codec = null;
-                            return;
-                        }
-                    }*/
                 }
             }
 
@@ -237,6 +229,8 @@ public class SoundFile {
                     //메모리를 할당하려고합니다. 우리가 OOM을 경우, 가비지 컬렉터를 실행 해보십시오.
                     int retry = 10;
                     while (retry > 0) {
+                        i=i++;
+                        Log.i("test","test2"+i);
                         try {
                             newDecodedBytes = ByteBuffer.allocate(newSize);
                             break;

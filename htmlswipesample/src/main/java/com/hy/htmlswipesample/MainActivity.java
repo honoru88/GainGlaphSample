@@ -33,7 +33,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements MediaPlayer.OnCompletionListener {
 
     private WebView mWebView;
 
@@ -184,13 +184,13 @@ public class MainActivity extends Activity {
     @JavascriptInterface
     public void recode(String str) {
         Log.i("메롱", "녹음" + SD_PATH.getAbsolutePath());
-
-        mediaRecorder = new MediaRecorder();
-        mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-        mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.RAW_AMR);
-        mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
-        mediaRecorder.setOutputFile(SD_PATH.getAbsolutePath() + "/" + str + ".amr");
-
+        if(mediaRecorder==null) {
+            mediaRecorder = new MediaRecorder();
+            mediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.RAW_AMR);
+            mediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT);
+            mediaRecorder.setOutputFile(SD_PATH.getAbsolutePath() + "/" + str + ".amr");
+        }
         try {
             mediaRecorder.prepare();
             mediaRecorder.start();
@@ -232,13 +232,13 @@ public class MainActivity extends Activity {
     public void play(String str) {
         Log.i("메롱", "플레이");
 
-            Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/" + str + ".mp3"));
-            if(player==null)
-                player = MediaPlayer.create(MainActivity.this, uri);
-            player.start();
-            //mWebView.loadUrl("javascript:pStop()");
+        Uri uri = Uri.fromFile(new File(Environment.getExternalStorageDirectory() + "/" + str + ".mp3"));
+        if (player == null) {
+            player = MediaPlayer.create(MainActivity.this, uri);
+            player.setOnCompletionListener(this);
 
-
+        }
+        player.start();
     }
 
     @JavascriptInterface
@@ -250,15 +250,26 @@ public class MainActivity extends Activity {
         dialog.show();
 
     }
+
     @JavascriptInterface
     public void pause() {
         Log.i("메롱", "팝업");
-        if(player!=null){
+        if (player != null) {
             player.pause();
         }
     }
 
+    @JavascriptInterface
+    public void nextpage() {
+        Log.i("메롱", "nextpage");
+        btnInit();
+    }
 
+    @JavascriptInterface
+    public void prevpage() {
+        Log.i("메롱", "prevpage");
+        btnInit();
+    }
 
 
     @Override
@@ -325,6 +336,45 @@ public class MainActivity extends Activity {
         while ((read = in.read(buffer)) != -1) {
             out.write(buffer, 0, read);
         }
+
+    }
+
+    /**
+     * 버튼 초기화
+     */
+    private void btnInit() {
+        if (player != null) {
+            if (player.isPlaying())
+                player.stop();
+            player = null;
+        }
+        if (mediaRecorder != null) {
+            mediaRecorder.stop();
+            mediaRecorder.release();
+            mediaRecorder = null;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mWebView.loadUrl("javascript:btnInit()");
+            }
+        });
+
+    }
+
+    /**
+     * 플레이어 리스너
+     *
+     * @param mp
+     */
+    @Override
+    public void onCompletion(MediaPlayer mp) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                mWebView.loadUrl("javascript:pStop()");
+            }
+        });
 
     }
 }

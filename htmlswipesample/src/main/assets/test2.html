@@ -11,20 +11,21 @@
 
     <script>
 		function nextpage() {
+		    window.Android.nextpage();
 			if(event.handled !== true) // This will prevent event triggering more then once
 			{    
 				var nextpage = $.mobile.activePage.next('article[data-role="page"]');
 				// swipe using id of next page if exists
 				if (nextpage.length > 0) {
 					$.mobile.changePage(nextpage, {transition: "slide", reverse: false}, true, true);
-					console.log($.mobile.activePage);
-
 				}
 				event.handled = true;
 			}
+
 			return false;         
 		}
 		function prevpage() {
+		    window.Android.prevpage();
 			if(event.handled !== true) // This will prevent event triggering more then once
 				{      
 					var prevpage = $.mobile.activePage.prev('article[data-role="page"]');
@@ -33,6 +34,7 @@
 					}
 					event.handled = true;
 				}
+
 				return false;            
 		}
 		
@@ -60,39 +62,62 @@
 			});    
 		}
 		
-
+        //녹음
 		function recode(str){
-            $.mobile.activePage.find("#btn_rec").css("display", "none");
-            $.mobile.activePage.find("#btn_stop").css("display", "");
-		    window.Android.recode(str);
+		    if( $.mobile.activePage.find("#btn_play").css("display")=="inline"||$.mobile.activePage.find("#btn_play").css("display")==""){
+                $.mobile.activePage.find("#btn_rec").css("display", "none");
+                $.mobile.activePage.find("#btn_stop").css("display", "");
+                window.Android.recode(str);
+		    }
 		}
-		
+		//재생
 		function play(str){
-            $.mobile.activePage.find("#btn_play").css("display", "none");
-            $.mobile.activePage.find("#btn_pause").css("display", "");
-            window.Android.play(str);
+		    if( $.mobile.activePage.find("#btn_rec").css("display")=="inline"||$.mobile.activePage.find("#btn_rec").css("display")==""){
+                $.mobile.activePage.find("#btn_play").css("display", "none");
+                $.mobile.activePage.find("#btn_pause").css("display", "");
+                window.Android.play(str);
+             }
 		}
+		//녹음_멈춤
 		function rStop(){
             $.mobile.activePage.find("#btn_stop").css("display", "none");
-            $.mobile.activePage.find("#btn_popup").css("display", "");
+            $.mobile.activePage.find("#btn_rec").css("display", "");
+            $.mobile.activePage.find("#btn_popup_on").css("display", "");
+
             window.Android.rStop();
 		}
+		//재생_일시정지
 		function pause(){
             $.mobile.activePage.find("#btn_pause").css("display", "none");
             $.mobile.activePage.find("#btn_play").css("display", "");
             window.Android.pause();
 		}
+		//팝업
 		function popup(str){
-		 window.Android.popup(str);
+		 if( $.mobile.activePage.find("#btn_play").css("display")=="inline"||$.mobile.activePage.find("#btn_rec").css("display")==""){
+		     window.Android.popup(str);
+		  }
+		}
+        //재생 중지
+		function pStop(){
+		  $.mobile.activePage.find("#btn_play").css("display", "");
+          $.mobile.activePage.find("#btn_pause").css("display", "none");
+		}
+		//버튼 초기 설정
+		function btnInit(){
+		  $.mobile.activePage.find("#btn_rec").css("display", "");
+          $.mobile.activePage.find("#btn_play").css("display", "");
+          $.mobile.activePage.find("#btn_stop").css("display", "none");
+          $.mobile.activePage.find("#btn_pause").css("display", "none");
+          $.mobile.activePage.find("#btn_popup_on").css("display", "none");
+          $.mobile.activePage.find("#btn_rec").click(true);
+          $.mobile.activePage.find("#btn_play").click(true);
 		}
 
-		function pStop(str){
-		 window.Android.pStop(str);
-		}
     </script>
 </head>
 
-<body>
+<body onload="setTimeout(scrollTo, 0, 0, 1)">
 <article data-role="page" id="article1" data-pagination="1">
     <div data-role="header" data-theme="b" data-position="fixed" data-id="footer">
         <dl class="dl1">
@@ -104,12 +129,12 @@
     </div>
     <div data-role="content">
         <p>들려주는 문장을 듣고 따라서 녹음해보세요.</p>
-        <b>1.Jan has a map and a cup.</b>
+        <b>1.Is it done well?</b>
 
         <div style="text-align: center;text-align=center; margin-top: 20px;margin-bottom: 30px;">
+            <img id="btn_popup_on" onclick="popup('my_001');" src="img/btn_popup_on.png" style="width: 30%; display: none;">
             <img id="btn_rec" onclick="recode('my_001');" src="img/btn_rec.png" style="width: 30%;">
             <img id="btn_stop" onclick="rStop();" src="img/btn_stop.png" style="width: 30%; display: none;">
-            <img id="btn_popup" onclick="popup('my_001');" src="img/btn_popup.png" style="width: 30%; display: none;">
             <img id="btn_play" onclick="play('my_001');" src="img/btn_play.png" style="width: 30%;">
             <img id="btn_pause" onclick="pause();" src="img/btn_pause.png" style="width: 30%; display: none;">
         </div>
@@ -149,12 +174,12 @@
     </div>
     <div data-role="content">
         <p>들려주는 문장을 듣고 따라서 녹음해보세요.</p>
-        <b>2.Jan has a map and a cup.</b>
+        <b>2.I'm here to clean up the mess.</b>
 
         <div style="text-align: center;text-align=center; margin-top: 20px;margin-bottom: 30px;">
+            <img id="btn_popup_on" onclick="popup('my_002');" src="img/btn_popup_on.png" style="width: 30%; display: none;">
             <img id="btn_rec" onclick="recode('my_002');" src="img/btn_rec.png" style="width: 30%;">
             <img id="btn_stop" onclick="rStop();" src="img/btn_stop.png" style="width: 30%; display: none;">
-            <img id="btn_popup" onclick="popup('my_002');" src="img/btn_popup.png" style="width: 30%; display: none;">
             <img id="btn_play" onclick="play('my_002');" src="img/btn_play.png" style="width: 30%;">
             <img id="btn_pause" onclick="pause();" src="img/btn_pause.png" style="width: 30%; display: none;">
         </div>
@@ -183,8 +208,6 @@
     </div>
 
 </article>
-
-
 <article data-role="page" id="article3" data-pagination="3">
     <div data-role="header" data-theme="b" data-position="fixed" data-id="footer">
         <dl class="dl1">
@@ -196,8 +219,16 @@
     </div>
     <div data-role="content">
         <p>들려주는 문장을 듣고 따라서 녹음해보세요.</p>
+        <b>3.Can I have your phone number?</b>
 
-        <p>1.Jan has a map and a cup.</p>
+        <div style="text-align: center;text-align=center; margin-top: 20px;margin-bottom: 30px;">
+            <img id="btn_popup_on" onclick="popup('my_002');" src="img/btn_popup_on.png" style="width: 30%; display: none;">
+            <img id="btn_rec" onclick="recode('my_003');" src="img/btn_rec.png" style="width: 30%;">
+            <img id="btn_stop" onclick="rStop();" src="img/btn_stop.png" style="width: 30%; display: none;">
+            <img id="btn_play" onclick="play('my_003');" src="img/btn_play.png" style="width: 30%;">
+            <img id="btn_pause" onclick="pause();" src="img/btn_pause.png" style="width: 30%; display: none;">
+        </div>
+
 
         <div id="bubble-holder">
             <div id="page1-bubble"></div>
@@ -207,14 +238,15 @@
     </div>
     <div data-role="footer" data-theme="b" data-position="fixed" data-id="footer" style="height: 20%;">
         <dl>
+
             <dt>
                 <button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-carat-l" onclick="prevpage();"
                         style="float:left;margin-left: 15px;width:30%;height: 70px;">prev
                 </button>
             </dt>
             <dt>
-                <button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-right ui-icon-carat-r" style="margin-left: 15px;height: 70px;width: 55%;">
-                    Next
+                <button class="ui-btn ui-shadow ui-corner-all ui-btn-icon-right ui-icon-carat-r"
+                        style="margin-left: 15px;height: 70px;width: 55%;">Next
                 </button>
             </dt>
         </dl>
