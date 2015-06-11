@@ -124,8 +124,8 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
         mWaveFormNavtive.setCheck(0);
         mWaveFormMe = (WaveformView) findViewById(R.id.waveform_me);
         mWaveFormMe.setCheck(1);
-        mWaveFormTest = (WaveformView2) findViewById(R.id.waveform_test);
-        mWaveFormTest.setCheck(2);
+     /*   mWaveFormTest = (WaveformView2) findViewById(R.id.waveform_test);
+        mWaveFormTest.setCheck(2);*/
 
         btn_cancle = (Button) findViewById(R.id.btn_cancle);
         btn_native_play = (Button) findViewById(R.id.btn_native_play);
@@ -142,22 +142,22 @@ public class ViewDialog extends Dialog implements View.OnClickListener, MediaPla
             AssetManager assetMgr = mContext.getAssets();
             mNavtiveSoundFile = new SoundFile(Environment.getExternalStorageDirectory() + "/" + mFilename + ".mp3", mWaveFormNavtive.getWidth());
             mMeSoundFile = new SoundFile(Environment.getExternalStorageDirectory() + "/" + mFilename + ".amr", mWaveFormMe.getWidth());
-            mTestSoundFile = new SoundFile2(Environment.getExternalStorageDirectory() + "/" + mFilename + ".mp3", mWaveFormTest.getWidth());
+//            mTestSoundFile = new SoundFile2(Environment.getExternalStorageDirectory() + "/" + mFilename + ".mp3", mWaveFormTest.getWidth());
 
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SoundFile.InvalidInputException e) {
             e.printStackTrace();
-        } catch (SoundFile2.InvalidInputException e) {
+        } /*catch (SoundFile2.InvalidInputException e) {
             e.printStackTrace();
-        }
+        }*/
         mWaveFormNavtive.setSoundFile(mNavtiveSoundFile);
         mWaveFormMe.setSoundFile(mMeSoundFile);
-        mWaveFormTest.setSoundFile(mTestSoundFile);
+//        mWaveFormTest.setSoundFile(mTestSoundFile);
 
         mWaveFormNavtive.invalidate();
         mWaveFormMe.invalidate();
-        mWaveFormTest.invalidate();
+//        mWaveFormTest.invalidate();
     }
 
     @Override
