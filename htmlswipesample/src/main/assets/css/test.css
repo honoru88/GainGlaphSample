@@ -3,7 +3,7 @@
 }
 
 #bubble-holder {
-    margin: 10px auto 0 auto;
+    margin: 0 auto 0 auto;
     width: 60px;
     height: 10px;
 }
@@ -21,9 +21,9 @@
     -webkit-box-shadow: inset 0 -1px #eee;    
     box-shadow: inset 0 -1px #eee;    
 }
-
-	.dt1 {float:left;font-size: 42px;}
-    .dd1 { padding-top: 25px;;margin-left: 130px;}
+    .dl1 {margin: 0;}
+	.dt1 {float:left;font-size: 32px;}
+    .dd1 { margin-left: 130px;}
 
     .ui-page-theme-b .ui-btn, html .ui-bar-b .ui-btn, html .ui-body-b .ui-btn, html body .ui-group-theme-b .ui-btn, html head+body .ui-btn.ui-btn-b, .ui-page-theme-b .ui-btn:visited, html .ui-bar-b .ui-btn:visited, html .ui-body-b .ui-btn:visited, html body .ui-group-theme-b .ui-btn:visited, html head+body .ui-btn.ui-btn-b:visited {
     background-color: #FCFCFC;

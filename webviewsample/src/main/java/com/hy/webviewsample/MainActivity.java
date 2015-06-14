@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -34,11 +35,12 @@ public class MainActivity extends ActionBarActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        mWebView.loadUrl("file:///android_asset/test/track.html");
+        mWebView.loadUrl("file:///android_asset/sst/webspeechdemo.html");
         // WebViewClient 지정
 
 
         mWebView.setWebViewClient(new WebViewClientClass());
+        mWebView.setWebChromeClient(new WebChromeClient());
         mWebView.addJavascriptInterface(new WebViewInterface(this,mWebView), "Android"); // eventDetail : 클라이언트에서 사용할 이름
 
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.KITKAT){

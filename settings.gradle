@@ -1,1 +1,1 @@
-include ':app', ':webviewsample', ':webrecord', ':websubtitle', ':myapplication', ':htmlswipesample'
+include ':app', ':webviewsample', ':webrecord', ':websubtitle', ':myapplication', ':htmlswipesample', ':offlinesst'
