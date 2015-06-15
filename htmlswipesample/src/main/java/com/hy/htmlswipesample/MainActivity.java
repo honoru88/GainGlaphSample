@@ -21,10 +21,13 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.hy.htmlswipesample.html.ParsingHtml;
 import com.hy.htmlswipesample.sound.SamplePlayer;
 import com.hy.htmlswipesample.sound.SoundFile;
 import com.hy.htmlswipesample.view.ViewDialog;
 import com.hy.htmlswipesample.view.WaveformView;
+
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -126,8 +129,16 @@ public class MainActivity extends Activity implements MediaPlayer.OnCompletionLi
         mWebView.addJavascriptInterface(this, "Android"); // eventDetail : 클라이언트에서 사용할 이름
 
         //mWebView.addJavascriptInterface(new WebViewInterface(), "Android"); // eventDetail : 클라이언트에서 사용할 이름
+        ParsingHtml parsingHtml = new ParsingHtml(this);
+        try {
+            mWebView.loadDataWithBaseURL("file:///android_asset/", parsingHtml.test("file:///android_asset/test2.html"), "text/html", "UTF-8", "");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        mWebView.loadUrl("file:///android_asset/test2.html");
+        //mWebView.loadUrl("file:///android_asset/test2.html");
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             mWebView.setWebContentsDebuggingEnabled(true);
         }
